@@ -125,7 +125,7 @@ body {
 .toolbar {
     display: flex;
     padding: 4px 16px;
-    background-color: #f9f9f9;
+    background-color: #e0e0e0;;
     border-bottom: 1px solid #e0e0e0;
     align-items: center;
     height: 36px;
