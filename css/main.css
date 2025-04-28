@@ -124,11 +124,21 @@ body {
 /* Toolbar */
 .toolbar {
     display: flex;
-    padding: 4px 16px;
-    background-color: #e0e0e0;;
+    padding: 0 8px;
+    background-color: #f1f3f4;
     border-bottom: 1px solid #e0e0e0;
     align-items: center;
     height: 36px;
+    overflow-x: auto;
+}
+
+.font-size-decrease, .font-size-increase {
+    font-weight: bold;
+}
+
+.toolbar-btn span {
+    font-size: 14px;
+    color: #5f6368;
 }
 
 .toolbar-group {
