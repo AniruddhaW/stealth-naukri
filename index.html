@@ -181,19 +181,18 @@
         
         <!-- Welcome message -->
         <div class="welcome-message" id="welcomeMessage">
-            <h1>Welcome to Stealth Naukri Search</h1>
-            <p>Search for jobs discreetly while at work. Nobody will know you're job hunting!</p>
-            <ul>
-                <li><strong>Problem:</strong> Searching job sites at work can get you in trouble</li>
-                <li><strong>Solution:</strong> This tool looks exactly like a Google Sheet</li>
-                <li><strong>How to use:</strong> Type a job title (like "data scientist") in cell A1</li>
-                <li><strong>Emergency:</strong> Press ESC anytime to show a normal spreadsheet</li>
-            </ul>
+            <h2>Shhh... This isn't a job portal.</h2>
+            <p>It's just a totally normal spreadsheet 👀</p>
+            <p>Type your dream job below, scroll like you're working,<br>
+            and apply without raising a single eyebrow.</p>
             <button class="got-it-btn" onclick="app.hideWelcome()">Got it</button>
         </div>
         
         <!-- Spreadsheet area -->
         <div class="spreadsheet-container">
+            <div class="formula-cell-reference">E12</div>
+            <div class="formula-function">fx</div>
+            
             <table class="spreadsheet">
                 <thead>
                     <tr>
@@ -206,12 +205,16 @@
                         <th>F</th>
                         <th>G</th>
                         <th>H</th>
+                        <th>I</th>
+                        <th>J</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td class="row-header">1</td>
-                        <td class="active-cell" id="searchCell">Type job title here...</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
                         <td></td>
                         <td></td>
                         <td></td>
@@ -222,12 +225,144 @@
                     </tr>
                     <tr>
                         <td class="row-header">2</td>
-                        <td>Company</td>
-                        <td>Position</td>
-                        <td>Location</td>
-                        <td>Salary</td>
-                        <td>Experience</td>
-                        <td>Apply</td>
+                        <td>Shhh... This isn't a job portal.</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">3</td>
+                        <td>It's just a totally normal spreadsheet 👀</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">4</td>
+                        <td>Type your dream job below, scroll like you're working,</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">5</td>
+                        <td>and apply without raising a single eyebrow.</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">6</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">7</td>
+                        <td class="got-it-cell">Got it</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">8</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">9</td>
+                        <td>Type job title here...</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">10</td>
+                        <td class="header-cell">Company</td>
+                        <td class="header-cell">Position</td>
+                        <td class="header-cell">Location</td>
+                        <td class="header-cell">Salary</td>
+                        <td class="header-cell">Experience</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">11</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">12</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class="active-cell" id="searchCell"></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
                         <td></td>
                         <td></td>
                     </tr>

@@ -124,3 +124,15 @@ const app = {
 document.addEventListener('DOMContentLoaded', function() {
     app.init();
 });
+
+// Add this to your main.js file:
+document.addEventListener('DOMContentLoaded', function() {
+    // Add click event for the "Got it" cell
+    const gotItCell = document.querySelector('.got-it-cell');
+    if (gotItCell) {
+        gotItCell.addEventListener('click', function() {
+            // Focus on the search cell
+            document.getElementById('searchCell').focus();
+        });
+    }
+});
