@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quarterly Budget Review - Google Sheets</title>
+    <link rel="icon" href="https://ssl.gstatic.com/docs/spreadsheets/spreadsheets_launcher_icon.png" type="image/png">
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <div class="app-container">
+        <button class="emergency-exit" onclick="app.showEmergencyView()">ESC</button>
+        
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <div class="sheets-logo">
+                    <img src="https://ssl.gstatic.com/docs/spreadsheets/spreadsheets_launcher_icon.png" alt="Sheets">
+                    <div class="sheets-title">Quarterly Budget Review</div>
+                </div>
+                <button class="star-btn">☆</button>
+            </div>
+            <div class="header-right">
+                <button class="share-btn">
+                    <span class="share-icon">🔒</span>
+                    Share
+                </button>
+                <div class="avatar" id="userAvatar">A</div>
+            </div>
+        </div>
+        
+        <!-- Menu bar -->
+        <div class="menu-bar">
+            <div class="menu-item">File</div>
+            <div class="menu-item">Edit</div>
+            <div class="menu-item">View</div>
+            <div class="menu-item">Insert</div>
+            <div class="menu-item">Format</div>
+            <div class="menu-item">Data</div>
+            <div class="menu-item">Tools</div>
+            <div class="menu-item">Extensions</div>
+            <div class="menu-item">Help</div>
+        </div>
+        
+        <!-- Toolbar -->
+        <div class="toolbar">
+            <!-- Toolbar buttons -->
+            <button class="login-btn" id="loginButton" onclick="app.showLoginModal()">Login</button>
+            <div class="help-button" onclick="app.showHelpModal()">?</div>
+        </div>
+        
+        <!-- Formula bar -->
+        <div class="formula-bar">
+            <div class="cell-reference">A1</div>
+            <div class="formula-input">
+                <div class="formula-equals">=</div>
+                <input type="text" class="formula-field" id="searchInput" placeholder="Type job title, skills or company">
+            </div>
+        </div>
+        
+        <!-- Welcome message -->
+        <div class="welcome-message" id="welcomeMessage">
+            <h1>Welcome to Stealth Naukri Search</h1>
+            <p>Search for jobs discreetly while at work. Nobody will know you're job hunting!</p>
+            <ul>
+                <li><strong>Problem:</strong> Searching job sites at work can get you in trouble</li>
+                <li><strong>Solution:</strong> This tool looks exactly like a Google Sheet</li>
+                <li><strong>How to use:</strong> Type a job title (like "data scientist") in cell A1</li>
+                <li><strong>Emergency:</strong> Press ESC anytime to show a normal spreadsheet</li>
+            </ul>
+            <button class="got-it-btn" onclick="app.hideWelcome()">Got it</button>
+        </div>
+        
+        <!-- Spreadsheet area -->
+        <div class="spreadsheet-container">
+            <table class="spreadsheet">
+                <thead>
+                    <tr>
+                        <th class="row-header"></th>
+                        <th>A</th>
+                        <th>B</th>
+                        <th>C</th>
+                        <th>D</th>
+                        <th>E</th>
+                        <th>F</th>
+                        <th>G</th>
+                        <th>H</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="row-header">1</td>
+                        <td class="active-cell" id="searchCell">Type job title here...</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">2</td>
+                        <td>Company</td>
+                        <td>Position</td>
+                        <td>Location</td>
+                        <td>Salary</td>
+                        <td>Experience</td>
+                        <td>Apply</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tbody id="results"></tbody>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Sheet tabs -->
+        <div class="sheets-tabs">
+            <div class="sheet-tab">Sheet1</div>
+            <div class="add-sheet">+</div>
+        </div>
+    </div>
+    
+    <!-- Login Modal -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Login to Naukri</div>
+                <div class="modal-close" onclick="app.hideLoginModal()">×</div>
+            </div>
+            
+            <form class="login-form" id="loginForm">
+                <div class="form-group">
+                    <label class="form-label" for="email">Email</label>
+                    <input type="email" id="email" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="password">Password</label>
+                    <input type="password" id="password" class="form-input" required>
+                </div>
+                <div class="form-footer">
+                    <div class="create-account" onclick="window.open('https://www.naukri.com/registration/createAccount')">Create an account</div>
+                    <button type="submit" class="login-submit">Login</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Load JavaScript -->
+    <script src="js/api.js"></script>
+    <script src="js/search.js"></script>
+    <script src="js/emergency.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
