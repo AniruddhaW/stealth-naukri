@@ -410,6 +410,7 @@
     <script src="js/app.js"></script>
 
 <!-- Direct script for hideWelcome function -->
+<!-- Direct script for hideWelcome function -->
 <script>
     function hideWelcome() {
       // Hide the welcome message
@@ -422,7 +423,31 @@
       // Clear any previous content
       resultsContainer.innerHTML = '';
       
-      // Add financial data rows (simplified version)
+      // Clear the existing welcome message rows from the table
+      // This removes rows 2-7 which contain the welcome text and "Got it" button
+      const tbody = document.querySelector('table.spreadsheet > tbody');
+      
+      // Keep the first row (row 1)
+      // Keep rows 9-12 (job search table headers)
+      // Remove rows 2-8 (welcome message rows)
+      const rowsToRemove = [];
+      const rows = tbody.querySelectorAll('tr');
+      
+      // Find rows to remove (rows 2-8)
+      rows.forEach((row, index) => {
+        // Skip the header row and get actual table rows
+        if (index > 0) {
+          const rowNumber = parseInt(row.querySelector('.row-header').textContent);
+          if (rowNumber >= 2 && rowNumber <= 8) {
+            rowsToRemove.push(row);
+          }
+        }
+      });
+      
+      // Remove the identified rows
+      rowsToRemove.forEach(row => row.remove());
+      
+      // Add financial data rows
       resultsContainer.innerHTML = `
         <tr>
           <td class="row-header">3</td>
