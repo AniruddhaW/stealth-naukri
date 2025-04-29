@@ -409,103 +409,93 @@
     <script src="js/emergency.js"></script>
     <script src="js/app.js"></script>
 
-<!-- Direct script for hideWelcome function -->
-<script>
-    function hideWelcome() {
-      // Hide the welcome message
-      document.getElementById('welcomeMessage').style.display = 'none';
-      localStorage.setItem('welcomeSeen', 'true');
-      
-      // Reorganize the table structure
-      const tbody = document.querySelector('table.spreadsheet > tbody');
-      const rows = Array.from(tbody.querySelectorAll('tr'));
-      
-      // Keep only specific rows (row 1, and rows 9-12)
-      // First get a reference to them before we modify the DOM
-      const rowsToKeep = [];
-      const headerRow = rows[0]; // The first row with column headers (A, B, C, etc.)
-      rowsToKeep.push(headerRow);
-      
-      // Get the job search rows (assuming they start at row 9)
-      const jobRows = rows.filter(row => {
-        const rowHeader = row.querySelector('.row-header');
-        if (!rowHeader) return false;
-        
-        const rowNum = parseInt(rowHeader.textContent);
-        return rowNum >= 9 && rowNum <= 12;
-      });
-      
-      rowsToKeep.push(...jobRows);
-      
-      // Clear all rows from tbody except the ones we're keeping
-      // First, detach the rows we want to keep
-      rowsToKeep.forEach(row => {
-        if (row.parentNode) {
-          row.parentNode.removeChild(row);
+    <script>
+        function hideWelcome() {
+          // Hide the welcome message
+          document.getElementById('welcomeMessage').style.display = 'none';
+          localStorage.setItem('welcomeSeen', 'true');
+          
+          // Get the main tbody and the results tbody
+          const mainTbody = document.querySelector('table.spreadsheet > tbody');
+          const resultsContainer = document.getElementById('results');
+          
+          // Clear the results container first
+          resultsContainer.innerHTML = '';
+          
+          // Get all rows from main tbody
+          const rows = Array.from(mainTbody.querySelectorAll('tr:not(#results tr)'));
+          
+          // Find and update specific rows
+          // We'll replace rows 2-8 with financial data
+          const instructionRows = rows.filter(row => {
+            const rowHeader = row.querySelector('.row-header');
+            if (!rowHeader) return false;
+            
+            const rowNum = parseInt(rowHeader.textContent);
+            return rowNum >= 2 && rowNum <= 8;
+          });
+          
+          // Remove the instruction rows
+          instructionRows.forEach(row => {
+            if (row.parentNode) {
+              row.parentNode.removeChild(row);
+            }
+          });
+          
+          // Create new financial data rows
+          const financialData = [
+            { row: 2, category: "Category", q1: "Q1 2023", q2: "Q2 2023", q3: "Q3 2023", trend: "Trend", status: "Status", isHeader: true },
+            { row: 3, category: "Marketing", q1: "$15,750", q2: "$18,450", q3: "$21,200", trend: "+12%", status: "On Track", trendColor: "#34A853" },
+            { row: 4, category: "Sales", q1: "$42,800", q2: "$45,100", q3: "$48,750", trend: "+8%", status: "Exceeding", trendColor: "#34A853", statusColor: "#34A853" },
+            { row: 5, category: "R&D", q1: "$34,200", q2: "$33,800", q3: "$36,500", trend: "+5%", status: "On Track", trendColor: "#34A853" },
+            { row: 6, category: "IT", q1: "$18,400", q2: "$22,700", q3: "$19,800", trend: "-13%", status: "Review", trendColor: "#EA4335", statusColor: "#EA4335" },
+            { row: 7, category: "Total", q1: "$160,300", q2: "$169,500", q3: "$177,350", trend: "+5%", status: "", trendColor: "#34A853", isBold: true },
+            { row: 8, blank: true }
+          ];
+          
+          // Find row 1 to insert after
+          const row1 = rows.find(row => {
+            const rowHeader = row.querySelector('.row-header');
+            return rowHeader && rowHeader.textContent === '1';
+          });
+          
+          // Insert financial rows after row 1
+          financialData.forEach(data => {
+            const newRow = document.createElement('tr');
+            
+            if (data.blank) {
+              newRow.innerHTML = `
+                <td class="row-header">${data.row}</td>
+                <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+              `;
+            } else {
+              newRow.innerHTML = `
+                <td class="row-header">${data.row}</td>
+                <td ${data.isHeader ? 'class="header-cell"' : ''} ${data.isBold ? 'style="font-weight:bold"' : ''}>${data.category}</td>
+                <td ${data.isHeader ? 'class="header-cell"' : ''}>${data.q1}</td>
+                <td ${data.isHeader ? 'class="header-cell"' : ''}>${data.q2}</td>
+                <td ${data.isHeader ? 'class="header-cell"' : ''}>${data.q3}</td>
+                <td ${data.isHeader ? 'class="header-cell"' : ''} ${data.trendColor ? `style="color:${data.trendColor}"` : ''}>${data.trend}</td>
+                <td ${data.isHeader ? 'class="header-cell"' : ''} ${data.statusColor ? `style="color:${data.statusColor}"` : ''}>${data.status}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+              `;
+            }
+            
+            // Insert after row 1 or after the last financial row
+            if (row1) {
+              row1.after(newRow);
+            } else {
+              mainTbody.appendChild(newRow);  
+            }
+          });
+          
+          // Focus on the search cell
+          document.getElementById('searchCell').focus();
         }
-      });
-      
-      // Clear tbody
-      tbody.innerHTML = '';
-      
-      // Add back the header row
-      tbody.appendChild(headerRow);
-      
-      // Add row 1 (blank row)
-      const row1 = document.createElement('tr');
-      row1.innerHTML = `
-        <td class="row-header">1</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-      `;
-      tbody.appendChild(row1);
-      
-      // Add financial data rows (rows 3-8)
-      const financialData = [
-        { row: 3, category: "Category", q1: "Q1 2023", q2: "Q2 2023", q3: "Q3 2023", trend: "Trend", status: "Status", isHeader: true },
-        { row: 4, category: "Marketing", q1: "$15,750", q2: "$18,450", q3: "$21,200", trend: "+12%", status: "On Track", trendColor: "#34A853" },
-        { row: 5, category: "Sales", q1: "$42,800", q2: "$45,100", q3: "$48,750", trend: "+8%", status: "Exceeding", trendColor: "#34A853", statusColor: "#34A853" },
-        { row: 6, category: "R&D", q1: "$34,200", q2: "$33,800", q3: "$36,500", trend: "+5%", status: "On Track", trendColor: "#34A853" },
-        { row: 7, category: "IT", q1: "$18,400", q2: "$22,700", q3: "$19,800", trend: "-13%", status: "Review", trendColor: "#EA4335", statusColor: "#EA4335" },
-        { row: 8, category: "Total", q1: "$160,300", q2: "$169,500", q3: "$177,350", trend: "+5%", status: "", trendColor: "#34A853", isBold: true }
-      ];
-      
-      // Add the financial data rows
-      financialData.forEach(data => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td class="row-header">${data.row}</td>
-          <td ${data.isHeader ? 'class="header-cell"' : ''} ${data.isBold ? 'style="font-weight:bold"' : ''}>${data.category}</td>
-          <td ${data.isHeader ? 'class="header-cell"' : ''}>${data.q1}</td>
-          <td ${data.isHeader ? 'class="header-cell"' : ''}>${data.q2}</td>
-          <td ${data.isHeader ? 'class="header-cell"' : ''}>${data.q3}</td>
-          <td ${data.isHeader ? 'class="header-cell"' : ''} ${data.trendColor ? `style="color:${data.trendColor}"` : ''}>${data.trend}</td>
-          <td ${data.isHeader ? 'class="header-cell"' : ''} ${data.statusColor ? `style="color:${data.statusColor}"` : ''}>${data.status}</td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-        `;
-        tbody.appendChild(row);
-      });
-      
-      // Now add back the job search rows
-      jobRows.forEach(row => {
-        tbody.appendChild(row);
-      });
-      
-      // Focus on the search cell
-      document.getElementById('searchCell').focus();
-    }
-  </script>
+      </script>
 
 </body>
 </html>
