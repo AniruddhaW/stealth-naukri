@@ -271,28 +271,22 @@ body {
     padding: 24px;
     background-color: #f8f9fa;
     border-bottom: 1px solid #dadce0;
+    max-width: 800px;
+    margin: 0 auto;
 }
 
-.welcome-message h1 {
+.welcome-message h2 {
     margin-top: 0;
-    color: #1a73e8;
-    font-size: 22px;
+    color: #202124;
+    font-size: 20px;
     margin-bottom: 16px;
+    font-weight: 500;
 }
 
 .welcome-message p {
     margin-bottom: 16px;
     line-height: 1.5;
-}
-
-.welcome-message ul {
-    margin-bottom: 20px;
-    padding-left: 24px;
-}
-
-.welcome-message li {
-    margin-bottom: 8px;
-    line-height: 1.5;
+    color: #202124;
 }
 
 .got-it-btn {
@@ -304,6 +298,10 @@ body {
     font-size: 14px;
     font-weight: 500;
     cursor: pointer;
+}
+
+.got-it-btn:hover {
+    background-color: #1967d2;
 }
 
 /* Spreadsheet */

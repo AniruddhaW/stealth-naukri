@@ -136,3 +136,103 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+// Function to hide welcome message and insert financial data
+function hideWelcome() {
+    // Hide the welcome message
+    document.getElementById('welcomeMessage').style.display = 'none';
+    
+    // Get the results container where we'll insert our data
+    const resultsContainer = document.getElementById('results');
+    
+    // Sample financial data (Quarterly Budget Review data)
+    const financialData = [
+        { category: "Marketing", q1: "$15,750", q2: "$18,450", q3: "$21,200", trend: "+12%", status: "On Track" },
+        { category: "Sales", q1: "$42,800", q2: "$45,100", q3: "$48,750", trend: "+8%", status: "Exceeding" },
+        { category: "R&D", q1: "$34,200", q2: "$33,800", q3: "$36,500", trend: "+5%", status: "On Track" },
+        { category: "Operations", q1: "$28,300", q2: "$27,900", q3: "$29,100", trend: "+3%", status: "On Track" },
+        { category: "IT", q1: "$18,400", q2: "$22,700", q3: "$19,800", trend: "-13%", status: "Review" },
+        { category: "HR", q1: "$12,100", q2: "$12,350", q3: "$12,600", trend: "+2%", status: "On Track" },
+        { category: "Admin", q1: "$8,750", q2: "$9,200", q3: "$9,400", trend: "+2%", status: "On Track" },
+        { category: "Total", q1: "$160,300", q2: "$169,500", q3: "$177,350", trend: "+5%", status: "" }
+    ];
+    
+    // Generate fake header row
+    const headerRow = document.createElement('tr');
+    const headerCells = ["Category", "Q1 2023", "Q2 2023", "Q3 2023", "Trend", "Status"];
+    
+    // Add row header first (the number)
+    const rowHeaderCell = document.createElement('td');
+    rowHeaderCell.className = 'row-header';
+    rowHeaderCell.textContent = '3';
+    headerRow.appendChild(rowHeaderCell);
+    
+    // Add actual headers
+    headerCells.forEach(header => {
+        const cell = document.createElement('td');
+        cell.textContent = header;
+        cell.className = 'header-cell';
+        headerRow.appendChild(cell);
+    });
+    
+    // Add the header row
+    resultsContainer.appendChild(headerRow);
+    
+    // Generate rows for each piece of financial data
+    financialData.forEach((row, index) => {
+        const tableRow = document.createElement('tr');
+        
+        // Add row header (the row number)
+        const rowHeaderCell = document.createElement('td');
+        rowHeaderCell.className = 'row-header';
+        rowHeaderCell.textContent = (index + 4).toString();
+        tableRow.appendChild(rowHeaderCell);
+        
+        // Add cells for each piece of data
+        const cell1 = document.createElement('td');
+        cell1.textContent = row.category;
+        if (row.category === "Total") {
+            cell1.style.fontWeight = "bold";
+        }
+        tableRow.appendChild(cell1);
+        
+        const cell2 = document.createElement('td');
+        cell2.textContent = row.q1;
+        tableRow.appendChild(cell2);
+        
+        const cell3 = document.createElement('td');
+        cell3.textContent = row.q2;
+        tableRow.appendChild(cell3);
+        
+        const cell4 = document.createElement('td');
+        cell4.textContent = row.q3;
+        tableRow.appendChild(cell4);
+        
+        const cell5 = document.createElement('td');
+        cell5.textContent = row.trend;
+        if (row.trend.includes('-')) {
+            cell5.style.color = "#EA4335"; // Google red for negative trends
+        } else {
+            cell5.style.color = "#34A853"; // Google green for positive trends
+        }
+        tableRow.appendChild(cell5);
+        
+        const cell6 = document.createElement('td');
+        cell6.textContent = row.status;
+        if (row.status === "Review") {
+            cell6.style.color = "#EA4335"; // Google red for review status
+        } else if (row.status === "Exceeding") {
+            cell6.style.color = "#34A853"; // Google green for exceeding
+        }
+        tableRow.appendChild(cell6);
+        
+        // Add the data row
+        resultsContainer.appendChild(tableRow);
+    });
+    
+    // Ensure the A1 search cell is ready for input
+    document.getElementById('searchCell').focus();
+}
+
+// Make the hideWelcome function globally accessible
+window.hideWelcome = hideWelcome;
