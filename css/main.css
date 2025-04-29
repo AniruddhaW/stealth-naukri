@@ -694,19 +694,21 @@ table.spreadsheet {
 .formula-cell-reference {
     position: absolute;
     left: 20px;
-    top: 147px;
+    top: 120px; /* Adjust this value to position it correctly */
     font-size: 12px;
     color: #5f6368;
     z-index: 15;
+    display: none; /* Hide it for now until positioned correctly */
 }
 
 .formula-function {
     position: absolute;
-    left: 100px;
-    top: 147px;
+    left: 50px; /* Adjust this value */
+    top: 120px; /* Adjust this value to position it correctly */
     font-size: 12px;
     color: #5f6368;
     z-index: 15;
+    display: none; /* Hide it for now until positioned correctly */
 }
 
 /* Got it button cell */
@@ -727,4 +729,9 @@ table.spreadsheet {
 /* Hide the original welcome message */
 .welcome-message {
     display: none;
+}
+
+.got-it-cell:hover {
+    background-color: #3367d6; /* Darker blue on hover */
+    cursor: pointer;
 }
