@@ -408,5 +408,82 @@
     <script src="js/search.js"></script>
     <script src="js/emergency.js"></script>
     <script src="js/app.js"></script>
+
+<!-- Direct script for hideWelcome function -->
+<script>
+    function hideWelcome() {
+      // Hide the welcome message
+      document.getElementById('welcomeMessage').style.display = 'none';
+      localStorage.setItem('welcomeSeen', 'true');
+      
+      // Get the results container
+      const resultsContainer = document.getElementById('results');
+      
+      // Clear any previous content
+      resultsContainer.innerHTML = '';
+      
+      // Add financial data rows (simplified version)
+      resultsContainer.innerHTML = `
+        <tr>
+          <td class="row-header">3</td>
+          <td class="header-cell">Category</td>
+          <td class="header-cell">Q1 2023</td>
+          <td class="header-cell">Q2 2023</td>
+          <td class="header-cell">Q3 2023</td>
+          <td class="header-cell">Trend</td>
+          <td class="header-cell">Status</td>
+        </tr>
+        <tr>
+          <td class="row-header">4</td>
+          <td>Marketing</td>
+          <td>$15,750</td>
+          <td>$18,450</td>
+          <td>$21,200</td>
+          <td style="color:#34A853">+12%</td>
+          <td>On Track</td>
+        </tr>
+        <tr>
+          <td class="row-header">5</td>
+          <td>Sales</td>
+          <td>$42,800</td>
+          <td>$45,100</td>
+          <td>$48,750</td>
+          <td style="color:#34A853">+8%</td>
+          <td style="color:#34A853">Exceeding</td>
+        </tr>
+        <tr>
+          <td class="row-header">6</td>
+          <td>R&D</td>
+          <td>$34,200</td>
+          <td>$33,800</td>
+          <td>$36,500</td>
+          <td style="color:#34A853">+5%</td>
+          <td>On Track</td>
+        </tr>
+        <tr>
+          <td class="row-header">7</td>
+          <td>IT</td>
+          <td>$18,400</td>
+          <td>$22,700</td>
+          <td>$19,800</td>
+          <td style="color:#EA4335">-13%</td>
+          <td style="color:#EA4335">Review</td>
+        </tr>
+        <tr>
+          <td class="row-header">8</td>
+          <td>Total</td>
+          <td>$160,300</td>
+          <td>$169,500</td>
+          <td>$177,350</td>
+          <td style="color:#34A853">+5%</td>
+          <td></td>
+        </tr>
+      `;
+      
+      // Focus on the search cell
+      document.getElementById('searchCell').focus();
+    }
+  </script>
+
 </body>
 </html>
