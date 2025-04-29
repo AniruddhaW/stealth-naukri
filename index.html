@@ -443,15 +443,15 @@
             }
           });
           
-          // Create financial data rows
+          // Create financial data rows - in the CORRECT ORDER
           const financialData = [
-            { row: 2, category: "Category", q1: "Q1 2023", q2: "Q2 2023", q3: "Q3 2023", trend: "Trend", status: "Status", isHeader: true },
-            { row: 3, category: "Marketing", q1: "₹15,750", q2: "₹18,450", q3: "₹21,200", trend: "+12%", status: "On Track", trendColor: "#34A853" },
-            { row: 4, category: "Sales", q1: "₹42,800", q2: "₹45,100", q3: "₹48,750", trend: "+8%", status: "Exceeding", trendColor: "#34A853", statusColor: "#34A853" },
-            { row: 5, category: "R&D", q1: "₹34,200", q2: "₹33,800", q3: "₹36,500", trend: "+5%", status: "On Track", trendColor: "#34A853" },
-            { row: 6, category: "IT", q1: "₹18,400", q2: "₹22,700", q3: "₹19,800", trend: "-13%", status: "Review", trendColor: "#EA4335", statusColor: "#EA4335" },
-            { row: 7, category: "Admin", q1: "₹9,800", q2: "₹10,250", q3: "₹10,400", trend: "+2%", status: "On Track", trendColor: "#34A853" },
-            { row: 8, category: "Total", q1: "₹160,300", q2: "₹169,500", q3: "₹177,350", trend: "+5%", status: "", trendColor: "#34A853", isBold: true }
+            { row: 1, category: "Category", q1: "Q1 2023", q2: "Q2 2023", q3: "Q3 2023", trend: "Trend", status: "Status", isHeader: true },
+            { row: 2, category: "Marketing", q1: "₹15,750", q2: "₹18,450", q3: "₹21,200", trend: "+12%", status: "On Track", trendColor: "#34A853" },
+            { row: 3, category: "Sales", q1: "₹42,800", q2: "₹45,100", q3: "₹48,750", trend: "+8%", status: "Exceeding", trendColor: "#34A853", statusColor: "#34A853" },
+            { row: 4, category: "R&D", q1: "₹34,200", q2: "₹33,800", q3: "₹36,500", trend: "+5%", status: "On Track", trendColor: "#34A853" },
+            { row: 5, category: "IT", q1: "₹18,400", q2: "₹22,700", q3: "₹19,800", trend: "-13%", status: "Review", trendColor: "#EA4335", statusColor: "#EA4335" },
+            { row: 6, category: "Admin", q1: "₹9,800", q2: "₹10,250", q3: "₹10,400", trend: "+2%", status: "On Track", trendColor: "#34A853" },
+            { row: 7, category: "Total", q1: "₹160,300", q2: "₹169,500", q3: "₹177,350", trend: "+5%", status: "", trendColor: "#34A853", isBold: true }
           ];
           
           // Find row 1 to insert after
@@ -460,10 +460,11 @@
             return rowHeader && rowHeader.textContent === '1';
           });
           
-          // Insert financial rows after row 1
-          // Insert them in reverse order so they appear in the right sequence
-          for (let i = financialData.length - 1; i >= 0; i--) {
-            const data = financialData[i];
+          // Find where to start inserting (after row 1)
+          let insertPoint = row1;
+          
+          // Insert each financial row IN ORDER
+          financialData.forEach(data => {
             const newRow = document.createElement('tr');
             
             newRow.innerHTML = `
@@ -480,13 +481,11 @@
               <td></td>
             `;
             
-            // Insert after row 1
-            if (row1.nextSibling) {
-              mainTbody.insertBefore(newRow, row1.nextSibling);
-            } else {
-              mainTbody.appendChild(newRow);
-            }
-          }
+            // Insert after the previous row
+            insertPoint.after(newRow);
+            // Update insert point to the row we just inserted
+            insertPoint = newRow;
+          });
           
           // Focus on the search cell
           document.getElementById('searchCell').focus();
