@@ -114,10 +114,20 @@ function mockJobSearch(query) {
         ]
     };
     
-    // Return matching jobs or empty array
+    // Improved search logic
     const normalizedQuery = query.toLowerCase().trim();
+    
+    console.log("Searching for:", normalizedQuery);
+    
+    // Check for exact or partial matches
     for (const key in commonJobs) {
+        // Log the comparison for debugging
+        console.log("Comparing with key:", key);
+        console.log("Key includes query:", key.includes(normalizedQuery));
+        console.log("Query includes key:", normalizedQuery.includes(key));
+        
         if (normalizedQuery.includes(key) || key.includes(normalizedQuery)) {
+            console.log("Found match:", key);
             return {
                 success: true,
                 jobs: commonJobs[key],
@@ -126,7 +136,8 @@ function mockJobSearch(query) {
         }
     }
     
-    // No matches
+    // If we get here, we didn't find any matches
+    console.log("No matches found");
     return {
         success: true,
         jobs: [],

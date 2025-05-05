@@ -11,18 +11,25 @@ const search = {
             resultsTable.removeChild(resultsTable.firstChild);
         }
         
-        // Update the search cell with the query
-       // We don't need to update the cell text since it's already set by user input
+        // Update A9 cell with the query
+        const searchCell = document.getElementById('searchCell');
+        searchCell.textContent = query;
         
         // Show loading indicator
         app.showLoading();
         
         try {
+            console.log("Performing search for:", query);
+            
             // Call the API to search for jobs
             const response = await naukriApi.searchJobs(query, "", "");
             
+            console.log("Search response:", response);
+            
             // Store the results
             this.currentResults = response.jobs || [];
+            
+            console.log("Current results:", this.currentResults);
             
             // Update the UI with the results
             this.displayResults();

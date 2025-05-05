@@ -18,35 +18,48 @@ const app = {
     
     // Set up event listeners
     setupEventListeners: function() {
+        // Keep the focus event listener for searchCell
         const searchCell = document.getElementById('searchCell');
         searchCell.addEventListener('focus', function() {
             document.querySelector('.cell-reference').textContent = 'A9';
         });
-
-searchCell.addEventListener('blur', function() {
-    if (this.textContent === '') {
-        this.textContent = 'Type job title here...';
-    }
-});
-
-searchCell.addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') {
-        e.preventDefault(); // Prevent line break
-        const query = this.textContent.trim();
-        if (query && query !== 'Type job title here...') {
-            search.performSearch(query);
-        }
-    }
-});
+    
+        // Function bar search input - keep this
+        const searchInput = document.getElementById('searchInput');
+        searchInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault(); // Prevent form submission
+                const query = this.value.trim();
+                if (query) {
+                    search.performSearch(query);
+                }
+            }
+        });
+    
+        // Keep the focus event listener for searchInput
+        searchInput.addEventListener('focus', function() {
+            document.querySelector('.cell-reference').textContent = 'A9';
+        });
+    
+        // REMOVE THIS event listener for searchCell since we want input only in formula bar
+        /* searchCell.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault(); // Prevent line break
+                const query = this.textContent.trim();
+                if (query) {
+                    search.performSearch(query);
+                }
+            }
+        }); */
         
-        // Emergency exit via ESC key
+        // Keep the emergency exit via ESC key
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 this.showEmergencyView();
             }
         });
         
-        // Login form submission
+        // Keep the login form submission
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = document.getElementById('email').value;

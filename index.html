@@ -172,19 +172,20 @@
         
         <!-- Formula bar -->
         <div class="formula-bar">
-            <div class="cell-reference">A1</div>
+            <div class="cell-reference">A9</div>
             <div class="formula-input">
                 <div class="formula-equals">=</div>
-                <input type="text" class="formula-field" id="searchInput" placeholder="Type job title, skills or company">
+                <input type="text" class="formula-field" id="searchInput" placeholder="Type job title, skills or company and hit enter">
             </div>
         </div>
+        
         
         <!-- Welcome message -->
         <div class="welcome-message" id="welcomeMessage">
             <h2>Shhh... This isn't a job portal.</h2>
             <p>It's just a totally normal spreadsheet 👀</p>
-            <p>Type your dream job below, scroll like you're working,<br>
-            and apply without raising a single eyebrow.</p>
+            <p>Type your dream job in the formula bar at the top,<br>
+               hit Enter, and apply without raising a single eyebrow.</p>
             <button class="got-it-btn" onclick="hideWelcome()">Got it</button>
         </div>
         
@@ -316,7 +317,7 @@
                     </tr>
                     <tr>
                         <td class="row-header">9</td>
-                        <td contenteditable="true" id="searchCell" class="search-cell">Type job title here...</td>
+                        <td id="searchCell" class="search-cell"></td>
                         <td></td>
                         <td></td>
                         <td></td>
