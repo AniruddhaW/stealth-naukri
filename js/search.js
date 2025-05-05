@@ -12,7 +12,7 @@ const search = {
         }
         
         // Update the search cell with the query
-        document.getElementById("searchCell").textContent = query;
+       // We don't need to update the cell text since it's already set by user input
         
         // Show loading indicator
         app.showLoading();

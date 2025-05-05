@@ -18,21 +18,26 @@ const app = {
     
     // Set up event listeners
     setupEventListeners: function() {
-        // Search input
-        const searchInput = document.getElementById('searchInput');
-        searchInput.addEventListener('input', (e) => {
-            const query = e.target.value.trim();
-            document.getElementById('searchCell').textContent = query;
+        const searchCell = document.getElementById('searchCell');
+        searchCell.addEventListener('focus', function() {
+            document.querySelector('.cell-reference').textContent = 'A9';
         });
-        
-        searchInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                const query = e.target.value.trim();
-                if (query) {
-                    search.performSearch(query);
-                }
-            }
-        });
+
+searchCell.addEventListener('blur', function() {
+    if (this.textContent === '') {
+        this.textContent = 'Type job title here...';
+    }
+});
+
+searchCell.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+        e.preventDefault(); // Prevent line break
+        const query = this.textContent.trim();
+        if (query && query !== 'Type job title here...') {
+            search.performSearch(query);
+        }
+    }
+});
         
         // Emergency exit via ESC key
         document.addEventListener('keydown', (e) => {
