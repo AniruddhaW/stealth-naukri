@@ -151,12 +151,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Function to hide welcome message and insert financial data
 function hideWelcome() {
-    // Hide the welcome message
     document.getElementById('welcomeMessage').style.display = 'none';
+    localStorage.setItem('welcomeSeen', 'true');
     
-    // Get the results container where we'll insert our data
-    const resultsContainer = document.getElementById('results');
+    // Get the spreadsheet table body
+    const tbody = document.querySelector('table.spreadsheet > tbody');
+    if (!tbody) {
+        console.error("Table body not found!");
+        return;
+    }
     
+    // Clear existing rows (except header row)
+    const existingRows = tbody.querySelectorAll('tr:not(:first-child)');
+    existingRows.forEach(row => {
+        tbody.removeChild(row);
+    });
     // Sample financial data (Quarterly Budget Review data)
     const financialData = [
         { category: "Marketing", q1: "$15,750", q2: "$18,450", q3: "$21,200", trend: "+12%", status: "On Track" },

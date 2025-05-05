@@ -291,7 +291,7 @@
                     </tr>
                     <tr>
                         <td class="row-header">7</td>
-                        <td class="got-it-cell" onclick="hideWelcome()">Got it</td>
+                        <td class="got-it-cell" onclick="app.hideWelcome()">Got it</td>
                         <td></td>
                         <td></td>
                         <td></td>
@@ -360,7 +360,7 @@
                         <td></td>
                         <td></td>
                         <td></td>
-                        <td class="active-cell" id="searchCell"></td>
+                        <td class="active-cell" id="activeCell"></td>
                         <td></td>
                         <td></td>
                         <td></td>
@@ -413,109 +413,6 @@
     <script src="js/search.js"></script>
     <script src="js/emergency.js"></script>
     <script src="js/app.js"></script>
-
-    <script>
-        function hideWelcome() {
-            console.log("Running hideWelcome function");
-            
-            // Hide the welcome message
-            document.getElementById('welcomeMessage').style.display = 'none';
-            localStorage.setItem('welcomeSeen', 'true');
-            
-            // Clear the results container
-            document.getElementById('results').innerHTML = '';
-            
-            // Get all rows in the table
-            const tbody = document.querySelector('table.spreadsheet > tbody');
-            const allRows = Array.from(tbody.querySelectorAll('tr:not(#results-container)'));
-            console.log("Initial rows count:", allRows.length);
-            
-            // Find job search rows (rows 9+)
-            const jobRows = allRows.filter(row => {
-                const rowHeader = row.querySelector('.row-header');
-                if (!rowHeader) return false;
-                
-                const rowNum = parseInt(rowHeader.textContent);
-                return rowNum >= 9;
-            });
-            
-            // Remove all rows except job search rows
-            allRows.forEach(row => {
-                const rowHeader = row.querySelector('.row-header');
-                if (!rowHeader) return;
-                
-                const rowNum = parseInt(rowHeader.textContent);
-                if (rowNum < 9) {
-                    row.parentNode.removeChild(row);
-                }
-            });
-            
-            // Create financial data rows
-            const financialData = [
-                { row: 1, category: "Category", q1: "Q1 2023", q2: "Q2 2023", q3: "Q3 2023", trend: "Trend", status: "Status", isHeader: true },
-                { row: 2, category: "Marketing", q1: "₹15,750", q2: "₹18,450", q3: "₹21,200", trend: "+12%", status: "On Track", trendColor: "#34A853" },
-                { row: 3, category: "Sales", q1: "₹42,800", q2: "₹45,100", q3: "₹48,750", trend: "+8%", status: "Exceeding", trendColor: "#34A853", statusColor: "#34A853" },
-                { row: 4, category: "R&D", q1: "₹34,200", q2: "₹33,800", q3: "₹36,500", trend: "+5%", status: "On Track", trendColor: "#34A853" },
-                { row: 5, category: "IT", q1: "₹18,400", q2: "₹22,700", q3: "₹19,800", trend: "-13%", status: "Review", trendColor: "#EA4335", statusColor: "#EA4335" },
-                { row: 6, category: "Admin", q1: "₹9,800", q2: "₹10,250", q3: "₹10,400", trend: "+2%", status: "On Track", trendColor: "#34A853" },
-                { row: 7, category: "Total", q1: "₹160,300", q2: "₹169,500", q3: "₹177,350", trend: "+5%", status: "", trendColor: "#34A853", isBold: true },
-                { row: 8, blank: true }
-            ];
-            
-            // Get reference to the first job row to insert before
-            const firstJobRow = jobRows.length > 0 ? jobRows[0] : null;
-            console.log("First job row:", firstJobRow ? firstJobRow.querySelector('.row-header').textContent : "none");
-            
-            // Insert rows in order
-            let previousRow = null;
-            for (const data of financialData) {
-                const newRow = document.createElement('tr');
-                
-                if (data.blank) {
-                    // Create an empty row
-                    newRow.innerHTML = `
-                        <td class="row-header">${data.row}</td>
-                        <td></td><td></td><td></td><td></td><td></td>
-                        <td></td><td></td><td></td><td></td><td></td>
-                    `;
-                } else {
-                    newRow.innerHTML = `
-                        <td class="row-header">${data.row}</td>
-                        <td ${data.isHeader ? 'class="header-cell"' : ''} ${data.isBold ? 'style="font-weight:bold"' : ''}>${data.category}</td>
-                        <td ${data.isHeader ? 'class="header-cell"' : ''}>${data.q1}</td>
-                        <td ${data.isHeader ? 'class="header-cell"' : ''}>${data.q2}</td>
-                        <td ${data.isHeader ? 'class="header-cell"' : ''}>${data.q3}</td>
-                        <td ${data.isHeader ? 'class="header-cell"' : ''} ${data.trendColor ? `style="color:${data.trendColor}"` : ''}>${data.trend}</td>
-                        <td ${data.isHeader ? 'class="header-cell"' : ''} ${data.statusColor ? `style="color:${data.statusColor}"` : ''}>${data.status}</td>
-                        <td></td><td></td><td></td><td></td>
-                    `;
-                }
-                
-                if (previousRow) {
-                    // Insert after previous row
-                    previousRow.after(newRow);
-                } else if (firstJobRow) {
-                    // Insert before first job row
-                    tbody.insertBefore(newRow, firstJobRow);
-                } else {
-                    // Append to tbody
-                    tbody.insertBefore(newRow, document.getElementById('results-container'));
-                }
-                
-                previousRow = newRow;
-            }
-            
-            console.log("Final rows count:", tbody.querySelectorAll('tr:not(#results-container)').length);
-            
-            // Focus on the search cell
-            document.getElementById('searchCell').focus();
-        }
-    </script>
-
-<script src="js/api.js"></script>
-<script src="js/search.js"></script>
-<script src="js/emergency.js"></script>
-<script src="js/main.js"></script>
 
 </body>
 </html>
