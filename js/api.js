@@ -96,6 +96,8 @@ const naukriApi = {
 
 // Mock data to simulate Naukri's response format
 function mockJobSearch(query) {
+    console.log("Mock job search for:", query);
+    
     const commonJobs = {
         "software developer": [
             { id: "j1", title: "Senior Software Developer", company: "Microsoft", location: "Hyderabad", experience: "5-8 years", salary: "₹20-25 LPA" },
@@ -116,18 +118,15 @@ function mockJobSearch(query) {
     
     // Improved search logic
     const normalizedQuery = query.toLowerCase().trim();
+    console.log("Normalized query:", normalizedQuery);
     
-    console.log("Searching for:", normalizedQuery);
-    
-    // Check for exact or partial matches
+    // Loop through keys and check for matches
     for (const key in commonJobs) {
-        // Log the comparison for debugging
-        console.log("Comparing with key:", key);
-        console.log("Key includes query:", key.includes(normalizedQuery));
-        console.log("Query includes key:", normalizedQuery.includes(key));
+        console.log("Checking against key:", key);
         
+        // Check if the query contains the key or the key contains the query
         if (normalizedQuery.includes(key) || key.includes(normalizedQuery)) {
-            console.log("Found match:", key);
+            console.log("Match found for key:", key);
             return {
                 success: true,
                 jobs: commonJobs[key],
@@ -136,8 +135,36 @@ function mockJobSearch(query) {
         }
     }
     
-    // If we get here, we didn't find any matches
-    console.log("No matches found");
+    // Direct matching for specific terms
+    if (normalizedQuery.includes("software") || normalizedQuery.includes("developer")) {
+        console.log("Matching software developer via individual terms");
+        return {
+            success: true,
+            jobs: commonJobs["software developer"],
+            total: commonJobs["software developer"].length
+        };
+    }
+    
+    if (normalizedQuery.includes("data") || normalizedQuery.includes("scientist")) {
+        console.log("Matching data scientist via individual terms");
+        return {
+            success: true,
+            jobs: commonJobs["data scientist"],
+            total: commonJobs["data scientist"].length
+        };
+    }
+    
+    if (normalizedQuery.includes("product") || normalizedQuery.includes("manager")) {
+        console.log("Matching product manager via individual terms");
+        return {
+            success: true,
+            jobs: commonJobs["product manager"],
+            total: commonJobs["product manager"].length
+        };
+    }
+    
+    // No matches found
+    console.log("No matches found for query:", normalizedQuery);
     return {
         success: true,
         jobs: [],

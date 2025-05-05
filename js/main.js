@@ -17,49 +17,40 @@ const app = {
     },
     
     // Set up event listeners
-    setupEventListeners: function() {
-        // Keep the focus event listener for searchCell
+    sesetupEventListeners: function() {
+        // Focus events for cell reference display
         const searchCell = document.getElementById('searchCell');
+        const searchInput = document.getElementById('searchInput');
+        
+        // Update cell reference display
         searchCell.addEventListener('focus', function() {
             document.querySelector('.cell-reference').textContent = 'A9';
         });
-    
-        // Function bar search input - keep this
-        const searchInput = document.getElementById('searchInput');
+        
+        searchInput.addEventListener('focus', function() {
+            document.querySelector('.cell-reference').textContent = 'A9';
+        });
+        
+        // IMPORTANT: This is the main event listener for the search function
         searchInput.addEventListener('keydown', function(e) {
             if (e.key === 'Enter') {
                 e.preventDefault(); // Prevent form submission
                 const query = this.value.trim();
+                console.log("Search query entered:", query); // Debug log
                 if (query) {
                     search.performSearch(query);
                 }
             }
         });
-    
-        // Keep the focus event listener for searchInput
-        searchInput.addEventListener('focus', function() {
-            document.querySelector('.cell-reference').textContent = 'A9';
-        });
-    
-        // REMOVE THIS event listener for searchCell since we want input only in formula bar
-        /* searchCell.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') {
-                e.preventDefault(); // Prevent line break
-                const query = this.textContent.trim();
-                if (query) {
-                    search.performSearch(query);
-                }
-            }
-        }); */
         
-        // Keep the emergency exit via ESC key
+        // Emergency exit via ESC key
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 this.showEmergencyView();
             }
         });
         
-        // Keep the login form submission
+        // Login form submission
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = document.getElementById('email').value;
@@ -73,6 +64,9 @@ const app = {
                 alert('Login failed. Please check your credentials.');
             }
         });
+        
+        // Add this line to log when the event listeners are set up
+        console.log("Event listeners set up successfully");
     },
     
     // Check login status

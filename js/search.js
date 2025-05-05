@@ -5,30 +5,28 @@ const search = {
     
     // Perform a job search based on the input
     performSearch: async function(query) {
+        console.log("Performing search for:", query);
+        
         // Clear any existing results
         const resultsTable = document.getElementById("results");
-        while (resultsTable.firstChild) {
-            resultsTable.removeChild(resultsTable.firstChild);
-        }
+        resultsTable.innerHTML = '';
         
-        // Update A9 cell with the query
-        const searchCell = document.getElementById('searchCell');
-        searchCell.textContent = query;
+        // Update the search cell with the query
+        const searchCell = document.getElementById("searchCell");
+        if (searchCell) {
+            searchCell.textContent = query;
+        }
         
         // Show loading indicator
         app.showLoading();
         
         try {
-            console.log("Performing search for:", query);
-            
             // Call the API to search for jobs
             const response = await naukriApi.searchJobs(query, "", "");
-            
             console.log("Search response:", response);
             
             // Store the results
             this.currentResults = response.jobs || [];
-            
             console.log("Current results:", this.currentResults);
             
             // Update the UI with the results
@@ -39,7 +37,20 @@ const search = {
         } catch (error) {
             console.error("Search failed:", error);
             app.hideLoading();
-            // Optionally show an error message
+            
+            // Show error message in results area
+            const row = document.createElement("tr");
+            const rowHeader = document.createElement("td");
+            rowHeader.className = "row-header";
+            rowHeader.textContent = "3";
+            row.appendChild(rowHeader);
+            
+            const messageCell = document.createElement("td");
+            messageCell.textContent = "Error searching for jobs: " + error.message;
+            messageCell.colSpan = 7;
+            row.appendChild(messageCell);
+            
+            resultsTable.appendChild(row);
         }
     },
     
