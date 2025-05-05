@@ -164,6 +164,12 @@ function mockJobSearch(query) {
             total: commonJobs["product manager"].length
         };
     }
+
+    // Add this inside the mockJobSearch function, just before the return statement for "No matches found"
+    console.log("Query was:", normalizedQuery);
+    console.log("Available job types:", Object.keys(commonJobs));
+    console.log("Checking if query contains 'product':", normalizedQuery.includes("product"));
+    console.log("Checking if query contains 'manager':", normalizedQuery.includes("manager"));
     
     // No matches found
     console.log("No matches found for query:", normalizedQuery);
@@ -691,3 +697,8 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log("searchCell exists:", !!document.getElementById('searchCell'));
     console.log("results container exists:", !!document.getElementById('results'));
 });
+
+// Add this at the end of your all.js/app.js file
+function hideWelcome() {
+    app.hideWelcome();
+}
