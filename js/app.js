@@ -236,7 +236,7 @@ const search = {
         const tbody = document.querySelector('table.spreadsheet > tbody');
         const rows = Array.from(tbody.querySelectorAll('tr'));
         
-        // Remove job result rows (rows 11-13)
+        // Only clear rows 11-13 (job results), NOT row 2
         for (let i = 11; i <= 13; i++) {
             const row = document.querySelector(`tr:nth-child(${i})`);
             if (row) {
@@ -367,69 +367,78 @@ const emergency = {
             resultsTable.removeChild(resultsTable.firstChild);
         }
         
-        // Add budget data
-        const budgetData = [
-            { category: "Revenue", q1: "₹5,00,00,000", q2: "₹5,50,00,000", q3: "₹6,20,00,000", q4: "₹7,10,00,000" },
-            { category: "COGS", q1: "₹3,00,00,000", q2: "₹3,30,00,000", q3: "₹3,72,00,000", q4: "₹4,26,00,000" },
-            { category: "Gross Profit", q1: "₹2,00,00,000", q2: "₹2,20,00,000", q3: "₹2,48,00,000", q4: "₹2,84,00,000" },
-            { category: "Marketing", q1: "₹50,00,000", q2: "₹55,00,000", q3: "₹62,00,000", q4: "₹71,00,000" },
-            { category: "R&D", q1: "₹75,00,000", q2: "₹82,50,000", q3: "₹93,00,000", q4: "₹1,06,50,000" },
-            { category: "Admin", q1: "₹25,00,000", q2: "₹27,50,000", q3: "₹31,00,000", q4: "₹35,50,000" },
-            { category: "Operating Income", q1: "₹50,00,000", q2: "₹55,00,000", q3: "₹62,00,000", q4: "₹71,00,000" }
-        ];
+        // Check if row 2 already has our budget data
+        const row2Cell = document.querySelector("tr:nth-child(2) td:nth-child(2)");
+        const hasExistingData = row2Cell && row2Cell.textContent.trim().length > 0;
         
-        // Update header rows
-        document.querySelector("tr:nth-child(2) td:nth-child(1)").textContent = "Category";
-        document.querySelector("tr:nth-child(2) td:nth-child(2)").textContent = "Q1";
-        document.querySelector("tr:nth-child(2) td:nth-child(3)").textContent = "Q2";
-        document.querySelector("tr:nth-child(2) td:nth-child(4)").textContent = "Q3";
-        document.querySelector("tr:nth-child(2) td:nth-child(5)").textContent = "Q4";
-        document.querySelector("tr:nth-child(2) td:nth-child(6)").textContent = "Total";
-        
-        // Add budget data rows
-        budgetData.forEach((data, index) => {
-            const row = document.createElement("tr");
+        // Only populate data if row 2 is empty
+        if (!hasExistingData) {
+            // Add budget data
+            const budgetData = [
+                { category: "Marketing", q1: "₹15,750", q2: "₹18,450", q3: "₹21,200", trend: "+12%", status: "On Track" },
+                { category: "Sales", q1: "₹42,800", q2: "₹45,100", q3: "₹48,750", trend: "+8%", status: "Exceeding" },
+                { category: "R&D", q1: "₹34,200", q2: "₹33,800", q3: "₹36,500", trend: "+5%", status: "On Track" },
+                { category: "Operations", q1: "₹28,300", q2: "₹27,900", q3: "₹29,100", trend: "+3%", status: "On Track" },
+                { category: "IT", q1: "₹18,400", q2: "₹22,700", q3: "₹19,800", trend: "-13%", status: "Review" },
+                { category: "HR", q1: "₹12,100", q2: "₹12,350", q3: "₹12,600", trend: "+2%", status: "On Track" },
+                { category: "Admin", q1: "₹8,750", q2: "₹9,200", q3: "₹9,400", trend: "+2%", status: "On Track" }
+            ];
             
-            // Add row header
-            const rowHeader = document.createElement("td");
-            rowHeader.className = "row-header";
-            rowHeader.textContent = (index + 3).toString();
-            row.appendChild(rowHeader);
-            
-            // Add category
-            const categoryCell = document.createElement("td");
-            categoryCell.textContent = data.category;
-            row.appendChild(categoryCell);
-            
-            // Add quarters
-            const q1Cell = document.createElement("td");
-            q1Cell.textContent = data.q1;
-            row.appendChild(q1Cell);
-            
-            const q2Cell = document.createElement("td");
-            q2Cell.textContent = data.q2;
-            row.appendChild(q2Cell);
-            
-            const q3Cell = document.createElement("td");
-            q3Cell.textContent = data.q3;
-            row.appendChild(q3Cell);
-            
-            const q4Cell = document.createElement("td");
-            q4Cell.textContent = data.q4;
-            row.appendChild(q4Cell);
-            
-            // Add total (sum of quarters)
-            const totalCell = document.createElement("td");
-            totalCell.textContent = "=SUM(B" + (index + 3) + ":E" + (index + 3) + ")";
-            row.appendChild(totalCell);
-            
-            // Add an empty cell
-            const emptyCell = document.createElement("td");
-            row.appendChild(emptyCell);
-            
-            resultsTable.appendChild(row);
-        });
-    }
+            // Add budget data rows
+            budgetData.forEach((data, index) => {
+                const rowIndex = index + 2; // Starting from row 2
+                const row = document.querySelector(`tr:nth-child(${rowIndex})`);
+                
+                if (row) {
+                    // Set the category cell (A column)
+                    const categoryCell = row.querySelector('td:nth-child(2)');
+                    if (categoryCell) {
+                        categoryCell.textContent = data.category;
+                    }
+                    
+                    // Set Q1 cell (B column)
+                    const q1Cell = row.querySelector('td:nth-child(3)');
+                    if (q1Cell) {
+                        q1Cell.textContent = data.q1;
+                    }
+                    
+                    // Set Q2 cell (C column)
+                    const q2Cell = row.querySelector('td:nth-child(4)');
+                    if (q2Cell) {
+                        q2Cell.textContent = data.q2;
+                    }
+                    
+                    // Set Q3 cell (D column)
+                    const q3Cell = row.querySelector('td:nth-child(5)');
+                    if (q3Cell) {
+                        q3Cell.textContent = data.q3;
+                    }
+                    
+                    // Set Trend cell (E column)
+                    const trendCell = row.querySelector('td:nth-child(6)');
+                    if (trendCell) {
+                        trendCell.textContent = data.trend;
+                        if (data.trend.includes('-')) {
+                            trendCell.style.color = "#EA4335"; // Google red
+                        } else {
+                            trendCell.style.color = "#34A853"; // Google green
+                        }
+                    }
+                    
+                    // Set Status cell (F column)
+                    const statusCell = row.querySelector('td:nth-child(7)');
+                    if (statusCell) {
+                        statusCell.textContent = data.status;
+                        if (data.status === "Review") {
+                            statusCell.style.color = "#EA4335"; // Google red
+                        } else if (data.status === "Exceeding") {
+                            statusCell.style.color = "#34A853"; // Google green
+                        }
+                    }
+                }
+            });
+        }
+    }    
 };
 
 // ===== MAIN.JS CONTENT =====
@@ -549,6 +558,18 @@ setupEventListeners: function() {
     }
 
     console.log("Event listeners setup complete");
+
+    // Add avatar click event listener - add this at the end of setupEventListeners function
+    const userAvatar = document.getElementById('userAvatar');
+    if (userAvatar) {
+        userAvatar.addEventListener('click', function(e) {
+            if (typeof userDropdown !== 'undefined') {
+                userDropdown.toggle(e);
+            }
+        });
+        userAvatar.style.cursor = 'pointer';
+        console.log("Avatar click listener attached");
+    }
 },
     
     // Add this method to your app object in app.js
@@ -572,9 +593,12 @@ logout: function() {
         
         if (token && user.name) {
             // Update UI for logged in user
-            const avatar = document.getElementById('userAvatar');
-            if (avatar) {
-                avatar.textContent = user.name.charAt(0).toUpperCase();
+            const userAvatar = document.getElementById('userAvatar');
+            if (userAvatar) {
+                userAvatar.addEventListener('click', function(e) {
+                    // Pass the event to toggle to prevent propagation
+                    userDropdown.toggle(e);
+                });
             }
             
             // Hide login button
@@ -869,6 +893,103 @@ logout: function() {
     }
 };
 
+
+// Add the userDropdown object right here, before the DOMContentLoaded event listener
+const userDropdown = {
+    isOpen: false,
+    
+    // Toggle dropdown visibility
+    toggle: function(e) {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation(); // Prevent event bubbling
+        }
+        
+        if (this.isOpen) {
+            this.close();
+        } else {
+            this.open();
+        }
+    },
+    
+    // Open the dropdown
+    open: function() {
+        // Create dropdown if it doesn't exist
+        if (!document.getElementById('userDropdown')) {
+            this.create();
+        }
+        
+        // Show dropdown
+        const dropdown = document.getElementById('userDropdown');
+        if (dropdown) {
+            dropdown.style.display = 'block';
+            this.isOpen = true;
+            
+            // Add event listener to close when clicking outside
+            setTimeout(() => {
+                document.addEventListener('click', this.handleOutsideClick);
+            }, 10);
+        }
+    },
+    
+    // Close the dropdown
+    close: function() {
+        const dropdown = document.getElementById('userDropdown');
+        if (dropdown) {
+            dropdown.style.display = 'none';
+            this.isOpen = false;
+            
+            // Remove outside click handler
+            document.removeEventListener('click', this.handleOutsideClick);
+        }
+    },
+    
+    // Create the dropdown menu
+    create: function() {
+        // Create dropdown container
+        const dropdown = document.createElement('div');
+        dropdown.id = 'userDropdown';
+        dropdown.className = 'user-dropdown';
+        
+        // Get user data
+        const userData = JSON.parse(localStorage.getItem('naukriUser') || '{}');
+        const userName = userData.name || 'Guest User';
+        const userEmail = userData.email || '';
+        
+        // Create dropdown content
+        dropdown.innerHTML = `
+            <div class="dropdown-user-info">
+                <div class="dropdown-avatar">${userName.charAt(0).toUpperCase()}</div>
+                <div class="dropdown-user-details">
+                    <div class="dropdown-user-name">${userName}</div>
+                    <div class="dropdown-user-email">${userEmail}</div>
+                </div>
+            </div>
+            <div class="dropdown-divider"></div>
+            <div class="dropdown-item" onclick="app.logout()">Sign out</div>
+        `;
+        
+        // Position the dropdown
+        dropdown.style.position = 'absolute';
+        dropdown.style.top = '50px';
+        dropdown.style.right = '10px';
+        dropdown.style.zIndex = '1000';
+        
+        // Add dropdown to the DOM
+        document.body.appendChild(dropdown);
+    },
+    
+    // Handle clicks outside the dropdown
+    handleOutsideClick: function(e) {
+        const dropdown = document.getElementById('userDropdown');
+        const avatar = document.getElementById('userAvatar');
+        
+        if (dropdown && avatar && !dropdown.contains(e.target) && !avatar.contains(e.target)) {
+            userDropdown.close();
+        }
+    }
+};
+
 // Initialize the app when the page loads
 document.addEventListener('DOMContentLoaded', function() {
     console.log("DOM fully loaded");
@@ -895,5 +1016,7 @@ function hideWelcome() {
         }
     }
 }
+
+
 
 window.app = app;
