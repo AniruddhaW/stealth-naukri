@@ -1,5 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
+
+<script>
+    // Direct implementation of avatar dropdown
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get the avatar element
+        const avatar = document.getElementById('userAvatar');
+        
+        // Add click event listener
+        if (avatar) {
+            avatar.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Check if dropdown already exists
+                let dropdown = document.getElementById('userDropdown');
+                
+                // If dropdown exists, toggle its visibility
+                if (dropdown) {
+                    if (dropdown.style.display === 'block') {
+                        dropdown.style.display = 'none';
+                    } else {
+                        dropdown.style.display = 'block';
+                    }
+                    return;
+                }
+                
+                // If dropdown doesn't exist, create it
+                dropdown = document.createElement('div');
+                dropdown.id = 'userDropdown';
+                dropdown.className = 'user-dropdown';
+                
+                // Get user data
+                const userData = JSON.parse(localStorage.getItem('naukriUser') || '{}');
+                const userName = userData.name || 'Guest User';
+                const userEmail = userData.email || '';
+                
+                // Set dropdown HTML
+                dropdown.innerHTML = `
+                    <div class="user-info">${userName}</div>
+                    <div class="email-info">${userEmail}</div>
+                    <div class="dropdown-separator"></div>
+                    <div class="logout-option" onclick="window.app.logout()">Sign out</div>
+                `;
+                
+                // Set position and style
+                dropdown.style.position = 'absolute';
+                dropdown.style.top = '50px';
+                dropdown.style.right = '10px';
+                dropdown.style.backgroundColor = 'white';
+                dropdown.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
+                dropdown.style.borderRadius = '8px';
+                dropdown.style.minWidth = '220px';
+                dropdown.style.zIndex = '1000';
+                dropdown.style.display = 'block';
+                
+                // Add to document
+                document.body.appendChild(dropdown);
+                
+                // Close dropdown when clicking outside
+                document.addEventListener('click', function closeDropdown(event) {
+                    if (event.target !== dropdown && !dropdown.contains(event.target) && event.target !== avatar) {
+                        dropdown.style.display = 'none';
+                    }
+                });
+            });
+            
+            // Make it obvious that avatar is clickable
+            avatar.style.cursor = 'pointer';
+        }
+    });
+    </script>
+    
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
