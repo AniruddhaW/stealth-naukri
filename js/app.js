@@ -458,69 +458,98 @@ const app = {
     },
     
     // Set up event listeners
-    setupEventListeners: function() {
-        console.log("Setting up event listeners");
-        
-        // Search cell event listeners
-        const searchCell = document.getElementById('searchCell');
-        if (searchCell) {
-            searchCell.addEventListener('focus', function() {
-                document.querySelector('.cell-reference').textContent = 'A9';
-            });
-        } else {
-            console.error("Search cell element not found!");
-        }
+    // Add this to your app.js file or replace the existing setupEventListeners function
 
-        // Function bar search input
-        const searchInput = document.getElementById('searchInput');
-        if (searchInput) {
-            searchInput.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault(); // Prevent form submission
-                    const query = this.value.trim();
-                    console.log("Search input entered:", query);
-                    if (query) {
-                        search.performSearch(query);
-                    }
+setupEventListeners: function() {
+    console.log("Setting up event listeners");
+    
+    // Search cell event listeners - WITH NULL CHECK
+    const searchCell = document.getElementById('searchCell');
+    if (searchCell) {
+        searchCell.addEventListener('focus', function() {
+            document.querySelector('.cell-reference').textContent = 'A9';
+        });
+        console.log("Search cell event listeners attached");
+    } else {
+        console.warn("Search cell element not found - skipping event listeners");
+    }
+
+    // Function bar search input - WITH NULL CHECK
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault(); // Prevent form submission
+                const query = this.value.trim();
+                console.log("Search input entered:", query);
+                if (query) {
+                    search.performSearch(query);
                 }
-            });
-            
-            searchInput.addEventListener('focus', function() {
-                document.querySelector('.cell-reference').textContent = 'A9';
-            });
-        } else {
-            console.error("Search input element not found!");
-        }
-        
-        // Emergency exit via ESC key
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                this.showEmergencyView();
             }
         });
         
-        // Login form submission
-        const loginForm = document.getElementById('loginForm');
-        if (loginForm) {
-            loginForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const email = document.getElementById('email').value;
-                const password = document.getElementById('password').value;
-                
-                try {
-                    await naukriApi.login(email, password);
-                    this.hideLoginModal();
-                    this.updateUserInterface();
-                } catch (error) {
-                    alert('Login failed. Please check your credentials.');
-                }
-            });
-        } else {
-            console.error("Login form element not found!");
+        searchInput.addEventListener('focus', function() {
+            document.querySelector('.cell-reference').textContent = 'A9';
+        });
+        console.log("Search input event listeners attached");
+    } else {
+        console.warn("Search input element not found - skipping event listeners");
+    }
+    
+    // Add login button event listeners - WITH NULL CHECK
+    const googleLoginBtn = document.querySelector('.gs-google-button') || document.querySelector('.google-login-btn');
+    if (googleLoginBtn) {
+        googleLoginBtn.addEventListener('click', function() {
+            console.log("Google login clicked");
+            alert('In the production version, this would redirect to Google for authentication.');
+            
+            // Simulate login
+            const mockUserData = {
+                id: "google_user123",
+                name: "Google User",
+                email: "user@gmail.com",
+                token: "mock-google-auth-token"
+            };
+            
+            localStorage.setItem('naukriAuthToken', mockUserData.token);
+            localStorage.setItem('naukriUser', JSON.stringify(mockUserData));
+            
+            app.hideLoginModal();
+            app.updateUserInterface();
+        });
+        console.log("Google login button listener attached");
+    }
+    
+    // Emergency exit via ESC key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            this.showEmergencyView();
         }
+    });
+    
+    // Login form submission - WITH NULL CHECK
+    const loginForm = document.getElementById('loginForm');
+    if (loginForm) {
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            try {
+                await naukriApi.login(email, password);
+                this.hideLoginModal();
+                this.updateUserInterface();
+            } catch (error) {
+                alert('Login failed. Please check your credentials.');
+            }
+        });
+        console.log("Login form event listener attached");
+    } else {
+        console.warn("Login form element not found - skipping event listener");
+    }
 
-        console.log("Event listeners setup complete");
-    },
+    console.log("Event listeners setup complete");
+},
     
     // Check login status
     checkLoginStatus: function() {
@@ -858,45 +887,3 @@ function hideWelcome() {
     }
 }
 
-// Add this to your app.js file
-document.addEventListener('DOMContentLoaded', function() {
-    // Password show/hide toggle
-    document.querySelector('.gs-show-button').addEventListener('click', function() {
-        const passwordInput = document.getElementById('password');
-        if (passwordInput.type === 'password') {
-            passwordInput.type = 'text';
-            this.textContent = 'Hide';
-        } else {
-            passwordInput.type = 'password';
-            this.textContent = 'Show';
-        }
-    });
-    
-    // Add this to your app.js file
-document.querySelector('.google-login-btn').addEventListener('click', function() {
-    // Show a modal or alert explaining this would redirect to Google in production
-    alert('In the production version, this would redirect to Google for authentication.');
-    
-    // Optionally simulate a successful login for demo purposes
-    const mockUserData = {
-        id: "google_user123",
-        name: "Google User",
-        email: "user@gmail.com",
-        token: "mock-google-auth-token"
-    };
-    
-    // Store mock auth data
-    localStorage.setItem('naukriAuthToken', mockUserData.token);
-    localStorage.setItem('naukriUser', JSON.stringify(mockUserData));
-    
-    // Update UI
-    app.hideLoginModal();
-    app.updateUserInterface();
-});
-    
-    // OTP login functionality
-    document.querySelector('.gs-otp-button').addEventListener('click', function() {
-        console.log('OTP login clicked - would trigger OTP flow in production');
-        // In a real implementation, this would show an OTP input screen
-    });
-});
