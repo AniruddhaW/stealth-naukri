@@ -551,6 +551,137 @@ setupEventListeners: function() {
     console.log("Event listeners setup complete");
 },
     
+    // Add this method to your app object in app.js
+logout: function() {
+    console.log("Logging out user");
+    
+    // Clear authentication data
+    naukriApi.logout();
+    
+    // Update the user interface
+    this.updateUserInterface();
+    
+    // Optional: Show a logout success message
+    alert("You have been successfully logged out.");
+},
+
+// Update the updateUserInterface function to handle logout display
+updateUserInterface: function() {
+    this.checkLoginStatus();
+    
+    // If search results are displayed, refresh them
+    if (search.currentResults.length > 0) {
+        search.displayResults();
+    }
+},
+
+// Update the checkLoginStatus function to include logout button
+checkLoginStatus: function() {
+    const token = localStorage.getItem('naukriAuthToken');
+    const user = JSON.parse(localStorage.getItem('naukriUser') || '{}');
+    
+    if (token && user.name) {
+        // User is logged in
+        
+        // Update avatar with user initial
+        const avatar = document.getElementById('userAvatar');
+        if (avatar) {
+            avatar.textContent = user.name.charAt(0).toUpperCase();
+            
+            // Add logout functionality to avatar
+            avatar.onclick = function() {
+                // Create a dropdown menu for logout
+                const existingDropdown = document.getElementById('userDropdown');
+                
+                if (existingDropdown) {
+                    // Toggle dropdown visibility
+                    existingDropdown.style.display = existingDropdown.style.display === 'none' ? 'block' : 'none';
+                } else {
+                    // Create dropdown
+                    const dropdown = document.createElement('div');
+                    dropdown.id = 'userDropdown';
+                    dropdown.className = 'user-dropdown';
+                    
+                    // Add user info
+                    const userInfo = document.createElement('div');
+                    userInfo.className = 'user-info';
+                    userInfo.textContent = user.name;
+                    dropdown.appendChild(userInfo);
+                    
+                    // Add email info
+                    const emailInfo = document.createElement('div');
+                    emailInfo.className = 'email-info';
+                    emailInfo.textContent = user.email;
+                    dropdown.appendChild(emailInfo);
+                    
+                    // Add separator
+                    const separator = document.createElement('div');
+                    separator.className = 'dropdown-separator';
+                    dropdown.appendChild(separator);
+                    
+                    // Add logout option
+                    const logoutOption = document.createElement('div');
+                    logoutOption.className = 'logout-option';
+                    logoutOption.textContent = 'Logout';
+                    logoutOption.onclick = function(e) {
+                        e.stopPropagation(); // Prevent triggering avatar's click event
+                        app.logout();
+                        dropdown.style.display = 'none';
+                    };
+                    dropdown.appendChild(logoutOption);
+                    
+                    // Position the dropdown
+                    dropdown.style.position = 'absolute';
+                    dropdown.style.top = '48px'; // Below the avatar
+                    dropdown.style.right = '16px';
+                    dropdown.style.backgroundColor = 'white';
+                    dropdown.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
+                    dropdown.style.borderRadius = '8px';
+                    dropdown.style.padding = '8px 0';
+                    dropdown.style.zIndex = '1000';
+                    
+                    // Add to document
+                    document.body.appendChild(dropdown);
+                    
+                    // Close dropdown when clicking elsewhere
+                    document.addEventListener('click', function closeDropdown(e) {
+                        if (!dropdown.contains(e.target) && e.target !== avatar) {
+                            dropdown.style.display = 'none';
+                        }
+                    });
+                }
+            };
+        }
+        
+        // Hide login button
+        const loginButton = document.getElementById('loginButton');
+        if (loginButton) {
+            loginButton.style.display = 'none';
+        }
+    } else {
+        // User is not logged in
+        
+        // Update avatar to default
+        const avatar = document.getElementById('userAvatar');
+        if (avatar) {
+            avatar.textContent = 'A';
+            avatar.onclick = null;
+        }
+        
+        // Show login button
+        const loginButton = document.getElementById('loginButton');
+        if (loginButton) {
+            loginButton.style.display = 'block';
+        }
+        
+        // Remove dropdown if it exists
+        const dropdown = document.getElementById('userDropdown');
+        if (dropdown) {
+            dropdown.remove();
+        }
+    }
+}
+
     // Check login status
     checkLoginStatus: function() {
         const token = localStorage.getItem('naukriAuthToken');
