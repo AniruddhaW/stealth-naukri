@@ -559,32 +559,20 @@ setupEventListeners: function() {
 
     console.log("Event listeners setup complete");
 
-    // Add avatar click event listener - add this at the end of setupEventListeners function
-    const userAvatar = document.getElementById('userAvatar');
-    if (userAvatar) {
-        userAvatar.addEventListener('click', function(e) {
-            if (typeof userDropdown !== 'undefined') {
-                userDropdown.toggle(e);
-            }
-        });
-        userAvatar.style.cursor = 'pointer';
-        console.log("Avatar click listener attached");
-    }
+    
 },
     
     // Add this method to your app object in app.js
-logout: function() {
-    console.log("Logging out user");
-    
-    // Clear authentication data
-    naukriApi.logout();
-    
-    // Update the user interface
-    this.updateUserInterface();
-    
-    // Optional: Show a logout success message
-    alert("You have been successfully logged out.");
-},
+    logout: function() {
+        // This method will be enhanced by the script in the HTML
+        console.log("Logging out user - original method");
+        
+        // Clear authentication data
+        naukriApi.logout();
+        
+        // Update the user interface
+        this.updateUserInterface();
+    },
 
     // Check login status
     checkLoginStatus: function() {
@@ -891,116 +879,6 @@ logout: function() {
 };
 
 
-// Add the userDropdown object right here, before the DOMContentLoaded event listener
-const userDropdown = {
-    isOpen: false,
-    
-    // Toggle dropdown visibility
-    toggle: function(e) {
-        if (e) {
-            e.preventDefault();
-            e.stopPropagation(); // Prevent event bubbling
-        }
-        
-        if (this.isOpen) {
-            this.close();
-        } else {
-            this.open();
-        }
-    },
-    
-    // Open the dropdown
-    // Open the dropdown
-open: function() {
-    // Create dropdown if it doesn't exist
-    if (!document.getElementById('userDropdown')) {
-        this.create();
-    }
-    
-    // Show dropdown
-    const dropdown = document.getElementById('userDropdown');
-    if (dropdown) {
-        dropdown.style.display = 'block';
-        this.isOpen = true;
-        
-        // Add event listener to close when clicking outside
-        const self = this;
-        setTimeout(() => {
-            document.addEventListener('click', function handleClick(e) {
-                const dropdown = document.getElementById('userDropdown');
-                const avatar = document.getElementById('userAvatar');
-                
-                if (dropdown && avatar && !dropdown.contains(e.target) && !avatar.contains(e.target)) {
-                    self.close();
-                    document.removeEventListener('click', handleClick);
-                }
-            });
-        }, 10);
-    }
-},
-    
-    // Close the dropdown
-    close: function() {
-        const dropdown = document.getElementById('userDropdown');
-        if (dropdown) {
-            dropdown.style.display = 'none';
-            this.isOpen = false;
-            
-            // Remove outside click handler
-            document.removeEventListener('click', this.handleOutsideClick);
-        }
-    },
-    
-    // Create the dropdown menu
-create: function() {
-    // Create dropdown container
-    const dropdown = document.createElement('div');
-    dropdown.id = 'userDropdown';
-    dropdown.className = 'user-dropdown';
-    
-    // Get user data
-    const userData = JSON.parse(localStorage.getItem('naukriUser') || '{}');
-    const userName = userData.name || 'Guest User';
-    const userEmail = userData.email || '';
-    
-    // Create dropdown content
-    dropdown.innerHTML = `
-        <div class="dropdown-user-info">
-            <div class="dropdown-avatar">${userName.charAt(0).toUpperCase()}</div>
-            <div class="dropdown-user-details">
-                <div class="dropdown-user-name">${userName}</div>
-                <div class="dropdown-user-email">${userEmail}</div>
-            </div>
-        </div>
-        <div class="dropdown-divider"></div>
-        <div class="dropdown-item" onclick="app.logout()">Sign out</div>
-    `;
-    
-    // Add dropdown to the DOM
-    document.body.appendChild(dropdown);
-    
-    // Position the dropdown correctly relative to the avatar
-    const avatar = document.getElementById('userAvatar');
-    if (avatar) {
-        const avatarRect = avatar.getBoundingClientRect();
-        dropdown.style.position = 'fixed';
-        dropdown.style.top = (avatarRect.bottom + 5) + 'px';
-        dropdown.style.right = (window.innerWidth - avatarRect.right + 5) + 'px';
-        dropdown.style.zIndex = '1000';
-        dropdown.style.display = 'none'; // Initially hidden
-    }
-},
-    
-    // Handle clicks outside the dropdown
-    handleOutsideClick: function(e) {
-        const dropdown = document.getElementById('userDropdown');
-        const avatar = document.getElementById('userAvatar');
-        
-        if (dropdown && avatar && !dropdown.contains(e.target) && !avatar.contains(e.target)) {
-            userDropdown.close();
-        }
-    }
-};
 
 // Initialize the app when the page loads
 document.addEventListener('DOMContentLoaded', function() {

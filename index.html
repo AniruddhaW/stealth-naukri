@@ -1,112 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<script>
-    // Direct implementation of avatar dropdown
-    document.addEventListener('DOMContentLoaded', function() {
-        // Get the avatar element
-        const avatar = document.getElementById('userAvatar');
-        
-        // Add click event listener
-        if (avatar) {
-            avatar.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                // Check if dropdown already exists
-                let dropdown = document.getElementById('userDropdown');
-                
-                // If dropdown exists, toggle its visibility
-                if (dropdown) {
-                    if (dropdown.style.display === 'block') {
-                        dropdown.style.display = 'none';
-                    } else {
-                        dropdown.style.display = 'block';
-                    }
-                    return;
-                }
-                
-                // If dropdown doesn't exist, create it
-                dropdown = document.createElement('div');
-                dropdown.id = 'userDropdown';
-                dropdown.className = 'user-dropdown';
-                
-                // Get user data
-                const userData = JSON.parse(localStorage.getItem('naukriUser') || '{}');
-                const userName = userData.name || 'Guest User';
-                const userEmail = userData.email || '';
-                
-                // Set dropdown HTML
-                dropdown.innerHTML = `
-                    <div class="user-info">${userName}</div>
-                    <div class="email-info">${userEmail}</div>
-                    <div class="dropdown-separator"></div>
-                    <div class="logout-option" onclick="window.app.logout()">Sign out</div>
-                `;
-                
-                // Set position and style
-                dropdown.style.position = 'absolute';
-                dropdown.style.top = '50px';
-                dropdown.style.right = '10px';
-                dropdown.style.backgroundColor = 'white';
-                dropdown.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
-                dropdown.style.borderRadius = '8px';
-                dropdown.style.minWidth = '220px';
-                dropdown.style.zIndex = '1000';
-                dropdown.style.display = 'block';
-                
-                // Add to document
-                document.body.appendChild(dropdown);
-                
-                // Close dropdown when clicking outside
-                document.addEventListener('click', function closeDropdown(event) {
-                    if (event.target !== dropdown && !dropdown.contains(event.target) && event.target !== avatar) {
-                        dropdown.style.display = 'none';
-                    }
-                });
-            });
-            
-            // Make it obvious that avatar is clickable
-            avatar.style.cursor = 'pointer';
-        }
-    });
-    </script>
-
-<script>
-    // Enhanced logout function
-    window.app.logout = function() {
-        console.log("Logging out user");
-        
-        // Clear authentication data
-        localStorage.removeItem('naukriAuthToken');
-        localStorage.removeItem('naukriUser');
-        
-        // Update UI for logged out state
-        const loginButton = document.getElementById('loginButton');
-        if (loginButton) {
-            loginButton.style.display = 'block'; // Show login button
-        }
-        
-        // Reset avatar to default
-        const userAvatar = document.getElementById('userAvatar');
-        if (userAvatar) {
-            userAvatar.textContent = 'A'; // Default avatar text
-        }
-        
-        // Remove dropdown if it exists
-        const dropdown = document.getElementById('userDropdown');
-        if (dropdown) {
-            dropdown.remove();
-        }
-        
-        // Optional: Show a logout success message
-        alert("You have been successfully logged out.");
-        
-        // If you have any search results displayed, you might want to clear them
-        // This depends on your app structure
-    };
-    </script>
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -557,109 +450,169 @@
     <!-- Load JavaScript -->
     <script src="js/app.js"></script>
     
-    <script>
-        // Direct DOM manipulation when logged out
-        document.addEventListener('DOMContentLoaded', function() {
-            // First, enhance the app.logout function
-            if (window.app && typeof window.app.logout === 'function') {
-                // Store the original logout function
-                const originalLogout = window.app.logout;
+
+<!-- Consolidated custom scripts -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // 1. Enhance the spreadsheet - add columns and rows
+    function enhanceSpreadsheet() {
+        // Fix column headers
+        const headerRow = document.querySelector('table.spreadsheet thead tr');
+        if (headerRow) {
+            const columns = headerRow.querySelectorAll('th');
+            const lastColumnIndex = columns.length - 1;
+            
+            if (lastColumnIndex < 26) {
+                for (let i = lastColumnIndex; i < 26; i++) {
+                    const columnLetter = String.fromCharCode(65 + i);
+                    const newHeader = document.createElement('th');
+                    newHeader.textContent = columnLetter;
+                    headerRow.appendChild(newHeader);
+                    
+                    const allRows = document.querySelectorAll('table.spreadsheet tbody tr');
+                    allRows.forEach(row => {
+                        const newCell = document.createElement('td');
+                        row.appendChild(newCell);
+                    });
+                }
+            }
+        }
+        
+        // Add additional rows
+        const tbody = document.querySelector('table.spreadsheet tbody');
+        const existingRows = tbody.querySelectorAll('tr').length;
+        const desiredRows = 30;
+        
+        if (existingRows < desiredRows && headerRow) {
+            const columnCount = headerRow.querySelectorAll('th').length - 1;
+            
+            for (let i = existingRows + 1; i <= desiredRows; i++) {
+                const newRow = document.createElement('tr');
                 
-                // Replace with enhanced version
-                window.app.logout = function() {
-                    console.log("Enhanced logout function running");
-                    
-                    // Run the original logout logic
-                    originalLogout.call(window.app);
-                    
-                    // Now make sure the login button is visible using multiple approaches
-                    const loginButton = document.getElementById('loginButton');
-                    if (loginButton) {
-                        // Remove any classes that might hide the button
-                        loginButton.className = loginButton.className.replace(/hidden|d-none|invisible/g, '');
-                        
-                        // Set explicit style properties
-                        loginButton.style.display = 'block';
-                        loginButton.style.visibility = 'visible';
-                        loginButton.style.opacity = '1';
-                        
-                        console.log("Login button should now be visible");
-                    } else {
-                        console.warn("Login button not found by ID 'loginButton'");
-                        
-                        // Try finding it by class or other means
-                        const possibleLoginButtons = document.querySelectorAll('.login-btn, button:contains("Login")');
-                        if (possibleLoginButtons.length > 0) {
-                            possibleLoginButtons.forEach(btn => {
-                                btn.style.display = 'block';
-                                btn.style.visibility = 'visible';
-                            });
-                            console.log("Found alternative login buttons and made them visible");
-                        }
-                    }
-                    
-                    // Remove the dropdown completely
-                    const dropdown = document.getElementById('userDropdown');
-                    if (dropdown) {
-                        dropdown.remove();
-                    }
-                    
-                    // Reset avatar
-                    const userAvatar = document.getElementById('userAvatar');
-                    if (userAvatar) {
-                        userAvatar.textContent = 'A';
-                    }
-                    
-                    // Force page refresh if all else fails
-                    // Uncomment the next line if the button still doesn't show up
-                    // window.location.reload();
-                };
+                const rowHeader = document.createElement('td');
+                rowHeader.className = 'row-header';
+                rowHeader.textContent = i.toString();
+                newRow.appendChild(rowHeader);
                 
-                console.log("Logout function enhanced successfully");
-            } else {
-                console.warn("App object or logout function not found");
+                for (let j = 0; j < columnCount; j++) {
+                    const newCell = document.createElement('td');
+                    newRow.appendChild(newCell);
+                }
+                
+                tbody.appendChild(newRow);
+            }
+        }
+    }
+    
+    // Call enhancement function on load
+    enhanceSpreadsheet();
+    
+    // 2. Avatar dropdown functionality
+    const avatar = document.getElementById('userAvatar');
+    if (avatar) {
+        avatar.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            let dropdown = document.getElementById('userDropdown');
+            
+            if (dropdown) {
+                if (dropdown.style.display === 'block') {
+                    dropdown.style.display = 'none';
+                } else {
+                    dropdown.style.display = 'block';
+                }
+                return;
             }
             
-            // Also add a direct click handler to the logout option as a backup
-            document.addEventListener('click', function(e) {
-                if (e.target && e.target.matches('.logout-option, [onclick*="logout"]')) {
-                    console.log("Direct logout handler triggered");
-                    
-                    // Clear user data
-                    localStorage.removeItem('naukriAuthToken');
-                    localStorage.removeItem('naukriUser');
-                    
-                    // Show login button
-                    const loginButton = document.getElementById('loginButton');
-                    if (loginButton) {
-                        loginButton.style.display = 'block';
-                        loginButton.style.visibility = 'visible';
-                    }
-                    
-                    // Reset avatar
-                    const userAvatar = document.getElementById('userAvatar');
-                    if (userAvatar) {
-                        userAvatar.textContent = 'A';
-                    }
-                    
-                    // Remove dropdown
-                    const dropdown = document.getElementById('userDropdown');
-                    if (dropdown) {
-                        dropdown.remove();
-                    }
-                    
-                    // Alert user
-                    setTimeout(function() {
-                        alert("You have been logged out successfully.");
-                    }, 100);
+            dropdown = document.createElement('div');
+            dropdown.id = 'userDropdown';
+            dropdown.className = 'user-dropdown';
+            
+            const userData = JSON.parse(localStorage.getItem('naukriUser') || '{}');
+            const userName = userData.name || 'Guest User';
+            const userEmail = userData.email || '';
+            
+            dropdown.innerHTML = `
+                <div class="user-info">${userName}</div>
+                <div class="email-info">${userEmail}</div>
+                <div class="dropdown-separator"></div>
+                <div class="logout-option" onclick="window.app.logout()">Sign out</div>
+            `;
+            
+            dropdown.style.position = 'absolute';
+            dropdown.style.top = '50px';
+            dropdown.style.right = '10px';
+            dropdown.style.backgroundColor = 'white';
+            dropdown.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
+            dropdown.style.borderRadius = '8px';
+            dropdown.style.minWidth = '220px';
+            dropdown.style.zIndex = '1000';
+            dropdown.style.display = 'block';
+            
+            document.body.appendChild(dropdown);
+            
+            document.addEventListener('click', function closeDropdown(event) {
+                if (event.target !== dropdown && !dropdown.contains(event.target) && event.target !== avatar) {
+                    dropdown.style.display = 'none';
                 }
             });
         });
         
-        // Add a simple diagnostic tool to help identify the login button 
-        // Uncomment the next line to log all buttons when troubleshooting
-        // console.log("All buttons on page:", document.querySelectorAll('button'));
-        </script>
+        avatar.style.cursor = 'pointer';
+    }
+    
+    // 3. Enhanced logout function
+    if (window.app && typeof window.app.logout === 'function') {
+        const originalLogout = window.app.logout;
+        
+        window.app.logout = function() {
+            console.log("Enhanced logout function running");
+            
+            // Clear authentication data
+            localStorage.removeItem('naukriAuthToken');
+            localStorage.removeItem('naukriUser');
+            
+            // Update UI elements
+            const loginButton = document.getElementById('loginButton');
+            if (loginButton) {
+                loginButton.style.display = 'block';
+                loginButton.style.visibility = 'visible';
+                loginButton.style.opacity = '1';
+                loginButton.className = loginButton.className.replace(/hidden|d-none|invisible/g, '');
+                console.log("Login button should now be visible");
+            }
+            
+            // Reset avatar
+            const userAvatar = document.getElementById('userAvatar');
+            if (userAvatar) {
+                userAvatar.textContent = 'A';
+            }
+            
+            // Remove dropdown
+            const dropdown = document.getElementById('userDropdown');
+            if (dropdown) {
+                dropdown.remove();
+            }
+            
+            // Show logout message
+            alert("You have been successfully logged out.");
+        };
+    }
+    
+    // 4. Enhanced hideWelcome function
+    const originalHideWelcome = window.hideWelcome;
+    window.hideWelcome = function() {
+        // Call the original function
+        if (typeof originalHideWelcome === 'function') {
+            originalHideWelcome();
+        }
+        
+        // Also enhance the spreadsheet
+        enhanceSpreadsheet();
+    };
+});
+</script>
 
 
 </body>
