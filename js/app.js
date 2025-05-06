@@ -680,7 +680,7 @@ checkLoginStatus: function() {
             dropdown.remove();
         }
     }
-}
+},
 
     // Check login status
     checkLoginStatus: function() {
@@ -1018,3 +1018,4 @@ function hideWelcome() {
     }
 }
 
+window.app = app;
