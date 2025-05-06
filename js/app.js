@@ -580,35 +580,73 @@ const app = {
             gotItCell.removeAttribute('onclick'); // Remove onclick handler
         }
         
+        // Clear the existing introductory text in the spreadsheet cells
+        for (let i = 2; i <= 5; i++) {
+            const cell = document.querySelector(`tr:nth-child(${i}) td:nth-child(2)`);
+            if (cell) {
+                cell.textContent = "";
+            }
+        }
+
         // Financial data to display
         const financialData = [
-            { category: "Marketing", q1: "$15,750", q2: "$18,450", q3: "$21,200", trend: "+12%", status: "On Track" },
-            { category: "Sales", q1: "$42,800", q2: "$45,100", q3: "$48,750", trend: "+8%", status: "Exceeding" },
-            { category: "R&D", q1: "$34,200", q2: "$33,800", q3: "$36,500", trend: "+5%", status: "On Track" },
-            { category: "Operations", q1: "$28,300", q2: "$27,900", q3: "$29,100", trend: "+3%", status: "On Track" },
-            { category: "IT", q1: "$18,400", q2: "$22,700", q3: "$19,800", trend: "-13%", status: "Review" },
-            { category: "HR", q1: "$12,100", q2: "$12,350", q3: "$12,600", trend: "+2%", status: "On Track" },
-            { category: "Admin", q1: "$8,750", q2: "$9,200", q3: "$9,400", trend: "+2%", status: "On Track" }
+            { category: "Marketing", q1: "₹15,750", q2: "₹18,450", q3: "₹21,200", trend: "+12%", status: "On Track" },
+            { category: "Sales", q1: "₹42,800", q2: "₹45,100", q3: "₹48,750", trend: "+8%", status: "Exceeding" },
+            { category: "R&D", q1: "₹34,200", q2: "₹33,800", q3: "₹36,500", trend: "+5%", status: "On Track" },
+            { category: "Operations", q1: "₹28,300", q2: "₹27,900", q3: "₹29,100", trend: "+3%", status: "On Track" },
+            { category: "IT", q1: "₹18,400", q2: "₹22,700", q3: "₹19,800", trend: "-13%", status: "Review" },
+            { category: "HR", q1: "₹12,100", q2: "₹12,350", q3: "₹12,600", trend: "+2%", status: "On Track" },
+            { category: "Admin", q1: "₹8,750", q2: "₹9,200", q3: "₹9,400", trend: "+2%", status: "On Track" }
         ];
         
-        // Update the spreadsheet with financial data
-        const headerRow = document.querySelector('tr:nth-child(1)');
-        if (headerRow) {
-            // Create and update header cells for columns A-G
-            const headers = ["Category", "Q1 2023", "Q2 2023", "Q3 2023", "Trend", "Status", ""];
-            for (let i = 0; i < headers.length; i++) {
-                const cellIndex = i + 1; // +1 because we're skipping the row header
-                const cell = headerRow.querySelector(`td:nth-child(${cellIndex + 1})`);
-                if (cell) {
-                    cell.textContent = headers[i];
-                    cell.className = 'header-cell';
+        // Create and update header cells for row 1, columns A-F
+    const headerRow = document.querySelector('tr:nth-child(1)');
+    if (headerRow) {
+        // Define headers for the first 6 columns (A-F)
+        const headers = ["Category", "Q1 2023", "Q2 2023", "Q3 2023", "Trend", "Status"];
+        
+        // Update each cell in row 1
+        for (let i = 0; i < headers.length; i++) {
+            // Get the cell at position (1, i+2) - adding 2 because i starts at 0 and we need to skip the row header
+            const cellSelector = `tr:nth-child(1) td:nth-child(${i+2})`;
+            const cell = document.querySelector(cellSelector);
+            
+            if (cell) {
+                // Cell exists, update it
+                cell.textContent = headers[i];
+                cell.className = 'header-cell';
+            } else {
+                // Cell doesn't exist, create it
+                const newCell = document.createElement('td');
+                newCell.textContent = headers[i];
+                newCell.className = 'header-cell';
+                
+                // Need to insert in the correct position
+                const nextCell = headerRow.querySelector(`td:nth-child(${i+2})`);
+                if (nextCell) {
+                    headerRow.insertBefore(newCell, nextCell);
                 } else {
-                    const newCell = document.createElement('td');
-                    newCell.textContent = headers[i];
-                    newCell.className = 'header-cell';
                     headerRow.appendChild(newCell);
                 }
             }
+        }
+        
+        // Fill the rest of the cells in row 1 with empty content
+        for (let i = headers.length; i < 15; i++) {
+            const cellSelector = `tr:nth-child(1) td:nth-child(${i+2})`;
+            const cell = document.querySelector(cellSelector);
+            
+            if (cell) {
+                // Cell exists, clear its content
+                cell.textContent = "";
+                cell.className = "";
+            } else {
+                // Cell doesn't exist, create an empty one
+                const newCell = document.createElement('td');
+                newCell.textContent = "";
+                headerRow.appendChild(newCell);
+            }
+        }
             
             // Fill columns H-Z with empty cells (to ensure spreadsheet looks authentic)
             for (let i = headers.length; i < 20; i++) {
@@ -692,6 +730,34 @@ const app = {
             }
         });
         
+        // Ensure rows 9-13 have proper cells
+    for (let rowIndex = 9; rowIndex <= 13; rowIndex++) {
+        const row = document.querySelector(`tr:nth-child(${rowIndex})`);
+        
+        if (row) {
+            // Check if each cell exists, create if missing
+            for (let colIndex = 2; colIndex <= 15; colIndex++) {
+                const cellSelector = `tr:nth-child(${rowIndex}) td:nth-child(${colIndex})`;
+                const cell = document.querySelector(cellSelector);
+                
+                if (!cell) {
+                    // Cell doesn't exist, create an empty one
+                    const newCell = document.createElement('td');
+                    newCell.textContent = "";
+                    
+                    // Insert at the correct position
+                    const nextCell = row.querySelector(`td:nth-child(${colIndex})`);
+                    if (nextCell) {
+                        row.insertBefore(newCell, nextCell);
+                    } else {
+                        row.appendChild(newCell);
+                    }
+                }
+            }
+        }
+    }
+
+
         // Make sure the search cell (cell A9) is empty initially
         const searchCell = document.getElementById('searchCell');
         if (searchCell) {
