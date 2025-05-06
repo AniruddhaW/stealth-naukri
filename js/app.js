@@ -857,3 +857,29 @@ function hideWelcome() {
         }
     }
 }
+
+// Add this to your app.js file
+
+// Toggle password visibility
+document.querySelector('.show-password-btn').addEventListener('click', function() {
+    const passwordInput = document.getElementById('password');
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        this.textContent = 'Hide';
+    } else {
+        passwordInput.type = 'password';
+        this.textContent = 'Show';
+    }
+});
+
+// Google login functionality
+document.querySelector('.google-login-btn').addEventListener('click', function() {
+    alert('This would redirect to Google authentication in a production environment');
+    // In a real implementation, this would redirect to OAuth
+});
+
+// OTP login functionality
+document.querySelector('.otp-login-btn').addEventListener('click', function() {
+    alert('This would trigger an OTP sending process in a production environment');
+    // In a real implementation, this would show an OTP input screen
+});
