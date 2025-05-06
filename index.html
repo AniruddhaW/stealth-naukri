@@ -71,7 +71,42 @@
         }
     });
     </script>
-    
+
+<script>
+    // Enhanced logout function
+    window.app.logout = function() {
+        console.log("Logging out user");
+        
+        // Clear authentication data
+        localStorage.removeItem('naukriAuthToken');
+        localStorage.removeItem('naukriUser');
+        
+        // Update UI for logged out state
+        const loginButton = document.getElementById('loginButton');
+        if (loginButton) {
+            loginButton.style.display = 'block'; // Show login button
+        }
+        
+        // Reset avatar to default
+        const userAvatar = document.getElementById('userAvatar');
+        if (userAvatar) {
+            userAvatar.textContent = 'A'; // Default avatar text
+        }
+        
+        // Remove dropdown if it exists
+        const dropdown = document.getElementById('userDropdown');
+        if (dropdown) {
+            dropdown.remove();
+        }
+        
+        // Optional: Show a logout success message
+        alert("You have been successfully logged out.");
+        
+        // If you have any search results displayed, you might want to clear them
+        // This depends on your app structure
+    };
+    </script>
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
