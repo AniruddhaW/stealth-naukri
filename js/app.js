@@ -595,10 +595,7 @@ logout: function() {
             // Update UI for logged in user
             const userAvatar = document.getElementById('userAvatar');
             if (userAvatar) {
-                userAvatar.addEventListener('click', function(e) {
-                    // Pass the event to toggle to prevent propagation
-                    userDropdown.toggle(e);
-                });
+                userAvatar.textContent = user.name.charAt(0).toUpperCase();
             }
             
             // Hide login button
@@ -913,24 +910,34 @@ const userDropdown = {
     },
     
     // Open the dropdown
-    open: function() {
-        // Create dropdown if it doesn't exist
-        if (!document.getElementById('userDropdown')) {
-            this.create();
-        }
+    // Open the dropdown
+open: function() {
+    // Create dropdown if it doesn't exist
+    if (!document.getElementById('userDropdown')) {
+        this.create();
+    }
+    
+    // Show dropdown
+    const dropdown = document.getElementById('userDropdown');
+    if (dropdown) {
+        dropdown.style.display = 'block';
+        this.isOpen = true;
         
-        // Show dropdown
-        const dropdown = document.getElementById('userDropdown');
-        if (dropdown) {
-            dropdown.style.display = 'block';
-            this.isOpen = true;
-            
-            // Add event listener to close when clicking outside
-            setTimeout(() => {
-                document.addEventListener('click', this.handleOutsideClick);
-            }, 10);
-        }
-    },
+        // Add event listener to close when clicking outside
+        const self = this;
+        setTimeout(() => {
+            document.addEventListener('click', function handleClick(e) {
+                const dropdown = document.getElementById('userDropdown');
+                const avatar = document.getElementById('userAvatar');
+                
+                if (dropdown && avatar && !dropdown.contains(e.target) && !avatar.contains(e.target)) {
+                    self.close();
+                    document.removeEventListener('click', handleClick);
+                }
+            });
+        }, 10);
+    }
+},
     
     // Close the dropdown
     close: function() {
@@ -945,39 +952,44 @@ const userDropdown = {
     },
     
     // Create the dropdown menu
-    create: function() {
-        // Create dropdown container
-        const dropdown = document.createElement('div');
-        dropdown.id = 'userDropdown';
-        dropdown.className = 'user-dropdown';
-        
-        // Get user data
-        const userData = JSON.parse(localStorage.getItem('naukriUser') || '{}');
-        const userName = userData.name || 'Guest User';
-        const userEmail = userData.email || '';
-        
-        // Create dropdown content
-        dropdown.innerHTML = `
-            <div class="dropdown-user-info">
-                <div class="dropdown-avatar">${userName.charAt(0).toUpperCase()}</div>
-                <div class="dropdown-user-details">
-                    <div class="dropdown-user-name">${userName}</div>
-                    <div class="dropdown-user-email">${userEmail}</div>
-                </div>
+create: function() {
+    // Create dropdown container
+    const dropdown = document.createElement('div');
+    dropdown.id = 'userDropdown';
+    dropdown.className = 'user-dropdown';
+    
+    // Get user data
+    const userData = JSON.parse(localStorage.getItem('naukriUser') || '{}');
+    const userName = userData.name || 'Guest User';
+    const userEmail = userData.email || '';
+    
+    // Create dropdown content
+    dropdown.innerHTML = `
+        <div class="dropdown-user-info">
+            <div class="dropdown-avatar">${userName.charAt(0).toUpperCase()}</div>
+            <div class="dropdown-user-details">
+                <div class="dropdown-user-name">${userName}</div>
+                <div class="dropdown-user-email">${userEmail}</div>
             </div>
-            <div class="dropdown-divider"></div>
-            <div class="dropdown-item" onclick="app.logout()">Sign out</div>
-        `;
-        
-        // Position the dropdown
-        dropdown.style.position = 'absolute';
-        dropdown.style.top = '50px';
-        dropdown.style.right = '10px';
+        </div>
+        <div class="dropdown-divider"></div>
+        <div class="dropdown-item" onclick="app.logout()">Sign out</div>
+    `;
+    
+    // Add dropdown to the DOM
+    document.body.appendChild(dropdown);
+    
+    // Position the dropdown correctly relative to the avatar
+    const avatar = document.getElementById('userAvatar');
+    if (avatar) {
+        const avatarRect = avatar.getBoundingClientRect();
+        dropdown.style.position = 'fixed';
+        dropdown.style.top = (avatarRect.bottom + 5) + 'px';
+        dropdown.style.right = (window.innerWidth - avatarRect.right + 5) + 'px';
         dropdown.style.zIndex = '1000';
-        
-        // Add dropdown to the DOM
-        document.body.appendChild(dropdown);
-    },
+        dropdown.style.display = 'none'; // Initially hidden
+    }
+},
     
     // Handle clicks outside the dropdown
     handleOutsideClick: function(e) {
