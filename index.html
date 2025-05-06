@@ -557,5 +557,110 @@
     <!-- Load JavaScript -->
     <script src="js/app.js"></script>
     
+    <script>
+        // Direct DOM manipulation when logged out
+        document.addEventListener('DOMContentLoaded', function() {
+            // First, enhance the app.logout function
+            if (window.app && typeof window.app.logout === 'function') {
+                // Store the original logout function
+                const originalLogout = window.app.logout;
+                
+                // Replace with enhanced version
+                window.app.logout = function() {
+                    console.log("Enhanced logout function running");
+                    
+                    // Run the original logout logic
+                    originalLogout.call(window.app);
+                    
+                    // Now make sure the login button is visible using multiple approaches
+                    const loginButton = document.getElementById('loginButton');
+                    if (loginButton) {
+                        // Remove any classes that might hide the button
+                        loginButton.className = loginButton.className.replace(/hidden|d-none|invisible/g, '');
+                        
+                        // Set explicit style properties
+                        loginButton.style.display = 'block';
+                        loginButton.style.visibility = 'visible';
+                        loginButton.style.opacity = '1';
+                        
+                        console.log("Login button should now be visible");
+                    } else {
+                        console.warn("Login button not found by ID 'loginButton'");
+                        
+                        // Try finding it by class or other means
+                        const possibleLoginButtons = document.querySelectorAll('.login-btn, button:contains("Login")');
+                        if (possibleLoginButtons.length > 0) {
+                            possibleLoginButtons.forEach(btn => {
+                                btn.style.display = 'block';
+                                btn.style.visibility = 'visible';
+                            });
+                            console.log("Found alternative login buttons and made them visible");
+                        }
+                    }
+                    
+                    // Remove the dropdown completely
+                    const dropdown = document.getElementById('userDropdown');
+                    if (dropdown) {
+                        dropdown.remove();
+                    }
+                    
+                    // Reset avatar
+                    const userAvatar = document.getElementById('userAvatar');
+                    if (userAvatar) {
+                        userAvatar.textContent = 'A';
+                    }
+                    
+                    // Force page refresh if all else fails
+                    // Uncomment the next line if the button still doesn't show up
+                    // window.location.reload();
+                };
+                
+                console.log("Logout function enhanced successfully");
+            } else {
+                console.warn("App object or logout function not found");
+            }
+            
+            // Also add a direct click handler to the logout option as a backup
+            document.addEventListener('click', function(e) {
+                if (e.target && e.target.matches('.logout-option, [onclick*="logout"]')) {
+                    console.log("Direct logout handler triggered");
+                    
+                    // Clear user data
+                    localStorage.removeItem('naukriAuthToken');
+                    localStorage.removeItem('naukriUser');
+                    
+                    // Show login button
+                    const loginButton = document.getElementById('loginButton');
+                    if (loginButton) {
+                        loginButton.style.display = 'block';
+                        loginButton.style.visibility = 'visible';
+                    }
+                    
+                    // Reset avatar
+                    const userAvatar = document.getElementById('userAvatar');
+                    if (userAvatar) {
+                        userAvatar.textContent = 'A';
+                    }
+                    
+                    // Remove dropdown
+                    const dropdown = document.getElementById('userDropdown');
+                    if (dropdown) {
+                        dropdown.remove();
+                    }
+                    
+                    // Alert user
+                    setTimeout(function() {
+                        alert("You have been logged out successfully.");
+                    }, 100);
+                }
+            });
+        });
+        
+        // Add a simple diagnostic tool to help identify the login button 
+        // Uncomment the next line to log all buttons when troubleshooting
+        // console.log("All buttons on page:", document.querySelectorAll('button'));
+        </script>
+
+
 </body>
 </html>
