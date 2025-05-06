@@ -230,17 +230,28 @@ const search = {
     
     // Display the search results in the spreadsheet
     displayResults: function() {
-        const resultsTable = document.getElementById("results");
-        console.log("Displaying results in table:", resultsTable);
+        console.log("Displaying results");
+        
+        // Clear existing job results (rows 11 and beyond)
+        const tbody = document.querySelector('table.spreadsheet > tbody');
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+        
+        // Keep only rows 1-10 (headers and search inputs)
+        for (let i = 10; i < rows.length; i++) {
+            // Don't remove the results-container row
+            if (!rows[i].id || rows[i].id !== 'results-container') {
+                tbody.removeChild(rows[i]);
+            }
+        }
         
         if (this.currentResults.length === 0) {
-            // No results found
+            // No results found - add a single "No results" row at position 11
             const row = document.createElement("tr");
             
             // Add row header
             const rowHeader = document.createElement("td");
             rowHeader.className = "row-header";
-            rowHeader.textContent = "3";
+            rowHeader.textContent = "11";
             row.appendChild(rowHeader);
             
             // Add "No results" message
@@ -249,18 +260,24 @@ const search = {
             messageCell.colSpan = 7;
             row.appendChild(messageCell);
             
-            resultsTable.appendChild(row);
+            // Insert after row 10
+            const row10 = document.querySelector('tr:nth-child(10)');
+            if (row10) {
+                row10.after(row);
+            } else {
+                tbody.appendChild(row);
+            }
             return;
         }
         
-        // Add job results
+        // Add job results starting at row 11
         this.currentResults.forEach((job, index) => {
             const row = document.createElement("tr");
             
             // Add row header
             const rowHeader = document.createElement("td");
             rowHeader.className = "row-header";
-            rowHeader.textContent = (index + 3).toString();
+            rowHeader.textContent = (index + 11).toString();
             row.appendChild(rowHeader);
             
             // Add company
@@ -302,7 +319,13 @@ const search = {
             const emptyCell = document.createElement("td");
             row.appendChild(emptyCell);
             
-            resultsTable.appendChild(row);
+            // Insert after row 10+index
+            const prevRow = document.querySelector(`tr:nth-child(${10+index})`);
+            if (prevRow) {
+                prevRow.after(row);
+            } else {
+                tbody.appendChild(row);
+            }
         });
     },
     
@@ -556,17 +579,15 @@ const app = {
         document.getElementById('welcomeMessage').style.display = 'none';
         localStorage.setItem('welcomeSeen', 'true');
         
-        // Get the results container where we'll insert our data
-        const resultsContainer = document.getElementById('results');
-        if (!resultsContainer) {
-            console.error("Results container not found!");
-            return;
+        // Clear the existing introductory text in the spreadsheet cells
+        for (let i = 2; i <= 5; i++) {
+            const cell = document.querySelector(`tr:nth-child(${i}) td:nth-child(2)`);
+            if (cell) {
+                cell.textContent = "";
+            }
         }
         
-        // Clear any existing content
-        resultsContainer.innerHTML = '';
-        
-        // Sample financial data (Quarterly Budget Review data)
+        // Create financial data rows directly in the spreadsheet
         const financialData = [
             { category: "Marketing", q1: "$15,750", q2: "$18,450", q3: "$21,200", trend: "+12%", status: "On Track" },
             { category: "Sales", q1: "$42,800", q2: "$45,100", q3: "$48,750", trend: "+8%", status: "Exceeding" },
@@ -574,87 +595,112 @@ const app = {
             { category: "Operations", q1: "$28,300", q2: "$27,900", q3: "$29,100", trend: "+3%", status: "On Track" },
             { category: "IT", q1: "$18,400", q2: "$22,700", q3: "$19,800", trend: "-13%", status: "Review" },
             { category: "HR", q1: "$12,100", q2: "$12,350", q3: "$12,600", trend: "+2%", status: "On Track" },
-            { category: "Admin", q1: "$8,750", q2: "$9,200", q3: "$9,400", trend: "+2%", status: "On Track" },
-            { category: "Total", q1: "$160,300", q2: "$169,500", q3: "$177,350", trend: "+5%", status: "" }
+            { category: "Admin", q1: "$8,750", q2: "$9,200", q3: "$9,400", trend: "+2%", status: "On Track" }
         ];
         
-        // Generate fake header row
-        const headerRow = document.createElement('tr');
-        const headerCells = ["Category", "Q1 2023", "Q2 2023", "Q3 2023", "Trend", "Status"];
-        
-        // Add row header first (the number)
-        const rowHeaderCell = document.createElement('td');
-        rowHeaderCell.className = 'row-header';
-        rowHeaderCell.textContent = '3';
-        headerRow.appendChild(rowHeaderCell);
-        
-        // Add actual headers
-        headerCells.forEach(header => {
-            const cell = document.createElement('td');
-            cell.textContent = header;
-            cell.className = 'header-cell';
-            headerRow.appendChild(cell);
-        });
-        
         // Add the header row
-        resultsContainer.appendChild(headerRow);
-        
-        // Generate rows for each piece of financial data
-        financialData.forEach((row, index) => {
-            const tableRow = document.createElement('tr');
-            
-            // Add row header (the row number)
-            const rowHeaderCell = document.createElement('td');
-            rowHeaderCell.className = 'row-header';
-            rowHeaderCell.textContent = (index + 4).toString();
-            tableRow.appendChild(rowHeaderCell);
-            
-            // Add cells for each piece of data
-            const cell1 = document.createElement('td');
-            cell1.textContent = row.category;
-            if (row.category === "Total") {
-                cell1.style.fontWeight = "bold";
-            }
-            tableRow.appendChild(cell1);
-            
-            const cell2 = document.createElement('td');
-            cell2.textContent = row.q1;
-            tableRow.appendChild(cell2);
-            
-            const cell3 = document.createElement('td');
-            cell3.textContent = row.q2;
-            tableRow.appendChild(cell3);
-            
-            const cell4 = document.createElement('td');
-            cell4.textContent = row.q3;
-            tableRow.appendChild(cell4);
-            
-            const cell5 = document.createElement('td');
-            cell5.textContent = row.trend;
-            if (row.trend.includes('-')) {
-                cell5.style.color = "#EA4335"; // Google red for negative trends
+        const headerCells = ["Category", "Q1 2023", "Q2 2023", "Q3 2023", "Trend", "Status"];
+        const headerRow = document.querySelector('tr:nth-child(1)');
+        for (let i = 0; i < headerCells.length; i++) {
+            const cell = headerRow.querySelector(`td:nth-child(${i+2})`);
+            if (cell) {
+                cell.textContent = headerCells[i];
+                cell.className = 'header-cell';
             } else {
-                cell5.style.color = "#34A853"; // Google green for positive trends
+                // If cell doesn't exist, create it
+                const newCell = document.createElement('td');
+                newCell.textContent = headerCells[i];
+                newCell.className = 'header-cell';
+                headerRow.appendChild(newCell);
             }
-            tableRow.appendChild(cell5);
+        }
+        
+        // Add financial data to rows 2-8
+        financialData.forEach((data, index) => {
+            const row = document.querySelector(`tr:nth-child(${index+2})`);
             
-            const cell6 = document.createElement('td');
-            cell6.textContent = row.status;
-            if (row.status === "Review") {
-                cell6.style.color = "#EA4335"; // Google red for review status
-            } else if (row.status === "Exceeding") {
-                cell6.style.color = "#34A853"; // Google green for exceeding
+            // Set the category cell
+            const categoryCell = row.querySelector('td:nth-child(2)');
+            categoryCell.textContent = data.category;
+            if (data.category === "Total") {
+                categoryCell.style.fontWeight = "bold";
             }
-            tableRow.appendChild(cell6);
             
-            // Add the data row
-            resultsContainer.appendChild(tableRow);
+            // Set Q1 cell
+            const q1Cell = row.querySelector('td:nth-child(3)');
+            if (q1Cell) {
+                q1Cell.textContent = data.q1;
+            } else {
+                const newCell = document.createElement('td');
+                newCell.textContent = data.q1;
+                row.appendChild(newCell);
+            }
+            
+            // Set Q2 cell
+            const q2Cell = row.querySelector('td:nth-child(4)');
+            if (q2Cell) {
+                q2Cell.textContent = data.q2;
+            } else {
+                const newCell = document.createElement('td');
+                newCell.textContent = data.q2;
+                row.appendChild(newCell);
+            }
+            
+            // Set Q3 cell
+            const q3Cell = row.querySelector('td:nth-child(5)');
+            if (q3Cell) {
+                q3Cell.textContent = data.q3;
+            } else {
+                const newCell = document.createElement('td');
+                newCell.textContent = data.q3;
+                row.appendChild(newCell);
+            }
+            
+            // Set Trend cell
+            const trendCell = row.querySelector('td:nth-child(6)');
+            if (trendCell) {
+                trendCell.textContent = data.trend;
+                if (data.trend.includes('-')) {
+                    trendCell.style.color = "#EA4335"; // Google red
+                } else {
+                    trendCell.style.color = "#34A853"; // Google green
+                }
+            } else {
+                const newCell = document.createElement('td');
+                newCell.textContent = data.trend;
+                if (data.trend.includes('-')) {
+                    newCell.style.color = "#EA4335"; // Google red
+                } else {
+                    newCell.style.color = "#34A853"; // Google green
+                }
+                row.appendChild(newCell);
+            }
+            
+            // Set Status cell
+            const statusCell = row.querySelector('td:nth-child(7)');
+            if (statusCell) {
+                statusCell.textContent = data.status;
+                if (data.status === "Review") {
+                    statusCell.style.color = "#EA4335"; // Google red
+                } else if (data.status === "Exceeding") {
+                    statusCell.style.color = "#34A853"; // Google green
+                }
+            } else {
+                const newCell = document.createElement('td');
+                newCell.textContent = data.status;
+                if (data.status === "Review") {
+                    newCell.style.color = "#EA4335"; // Google red
+                } else if (data.status === "Exceeding") {
+                    newCell.style.color = "#34A853"; // Google green
+                }
+                row.appendChild(newCell);
+            }
         });
         
-        // Ensure the search cell is ready for input
-        const searchCell = document.getElementById('searchCell');
-        if (searchCell) {
-            searchCell.focus();
+        // Make sure the search cell is ready for input
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+            searchInput.focus();
         }
     },
     
@@ -701,4 +747,18 @@ document.addEventListener('DOMContentLoaded', function() {
 // Add this at the end of your all.js/app.js file
 function hideWelcome() {
     app.hideWelcome();
+}
+
+function hideWelcome() {
+    if (typeof app !== 'undefined' && app.hideWelcome) {
+        app.hideWelcome();
+    } else {
+        console.error("App object not defined or hideWelcome method not available");
+        // Fallback hiding of welcome message
+        const welcomeMessage = document.getElementById('welcomeMessage');
+        if (welcomeMessage) {
+            welcomeMessage.style.display = 'none';
+            localStorage.setItem('welcomeSeen', 'true');
+        }
+    }
 }
