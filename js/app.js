@@ -872,11 +872,27 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // Google login functionality
-    document.querySelector('.gs-google-button').addEventListener('click', function() {
-        console.log('Google login clicked - would redirect to Google auth in production');
-        // In a real implementation, this would redirect to OAuth
-    });
+    // Add this to your app.js file
+document.querySelector('.google-login-btn').addEventListener('click', function() {
+    // Show a modal or alert explaining this would redirect to Google in production
+    alert('In the production version, this would redirect to Google for authentication.');
+    
+    // Optionally simulate a successful login for demo purposes
+    const mockUserData = {
+        id: "google_user123",
+        name: "Google User",
+        email: "user@gmail.com",
+        token: "mock-google-auth-token"
+    };
+    
+    // Store mock auth data
+    localStorage.setItem('naukriAuthToken', mockUserData.token);
+    localStorage.setItem('naukriUser', JSON.stringify(mockUserData));
+    
+    // Update UI
+    app.hideLoginModal();
+    app.updateUserInterface();
+});
     
     // OTP login functionality
     document.querySelector('.gs-otp-button').addEventListener('click', function() {
