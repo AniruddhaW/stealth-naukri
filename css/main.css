@@ -428,7 +428,7 @@ table.spreadsheet {
 }
 
 /* Modal Overlays */
-.modal-overlay {
+.gs-modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -442,210 +442,213 @@ table.spreadsheet {
     display: none;
 }
 
-.modal-content {
-    background: white;
+.gs-modal-content {
+    background-color: white;
     border-radius: 8px;
-    max-width: 420px;
-    width: 90%;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    width: 448px;
+    max-width: 90vw;
     max-height: 90vh;
-    overflow-y: auto;
-    position: relative;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     display: flex;
     flex-direction: column;
+    overflow: hidden;
 }
 
-.modal-header {
+.gs-modal-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 16px 24px;
-    border-bottom: 1px solid #f0f0f0;
+    border-bottom: 1px solid #e0e0e0;
 }
 
-.modal-title {
-    font-size: 20px;
-    font-weight: 600;
-    color: #222;
-}
-
-.modal-close {
-    cursor: pointer;
-    font-size: 24px;
-    color: #666;
-}
-
-.login-container {
-    padding: 24px;
-}
-
-.login-form {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.form-group {
-    margin-bottom: 0;
-}
-
-.form-label {
-    display: block;
-    margin-bottom: 8px;
-    font-size: 14px;
-    color: #333;
+.gs-modal-header h2 {
+    font-size: 16px;
     font-weight: 500;
+    color: #202124;
+    margin: 0;
 }
 
-.form-input {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    font-size: 14px;
-    color: #333;
-    box-sizing: border-box;
-    transition: border-color 0.2s;
-}
-
-.form-input:focus {
-    border-color: #4285f4;
-    outline: none;
-}
-
-.password-input-container {
-    position: relative;
-    display: flex;
-    align-items: center;
-}
-
-.show-password-btn {
-    position: absolute;
-    right: 10px;
+.gs-close-button {
     background: none;
     border: none;
-    color: #4285f4;
-    font-size: 14px;
+    font-size: 20px;
+    color: #5f6368;
     cursor: pointer;
-    font-weight: 500;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
 }
 
-.forgot-password {
+.gs-modal-body {
+    padding: 24px;
+    overflow-y: auto;
+}
+
+.gs-form-group {
+    margin-bottom: 24px;
+}
+
+.gs-form-group label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 8px;
+    color: #202124;
+}
+
+.gs-text-input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #dadce0;
+    border-radius: 4px;
+    font-size: 14px;
+    color: #202124;
+    height: 36px;
+    box-sizing: border-box;
+}
+
+.gs-text-input:focus {
+    outline: none;
+    border-color: #1a73e8;
+}
+
+.gs-password-field {
+    position: relative;
+}
+
+.gs-show-button {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #1a73e8;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 0;
+}
+
+.gs-forgot-link {
     text-align: right;
     margin-top: 8px;
 }
 
-.forgot-password a {
-    color: #4285f4;
+.gs-forgot-link a {
+    color: #1a73e8;
     text-decoration: none;
     font-size: 14px;
 }
 
-.login-submit {
-    background-color: #4285f4;
-    color: white;
-    border: none;
-    padding: 12px;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background-color 0.2s;
-    width: 100%;
-}
-
-.login-submit:hover {
-    background-color: #3367d6;
-}
-
-.login-divider {
+.gs-divider {
     display: flex;
     align-items: center;
-    margin: 16px 0;
-    color: #666;
+    margin: 24px 0;
+    color: #5f6368;
     font-size: 14px;
 }
 
-.login-divider::before,
-.login-divider::after {
+.gs-divider::before,
+.gs-divider::after {
     content: "";
     flex: 1;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #dadce0;
 }
 
-.login-divider span {
-    padding: 0 10px;
+.gs-divider span {
+    padding: 0 16px;
 }
 
-.google-login-btn {
+.gs-alternate-logins {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.gs-google-button,
+.gs-otp-button {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background-color: white;
-    color: #333;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 4px;
     font-size: 14px;
-    font-weight: 500;
     cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-.google-login-btn:hover {
-    background-color: #f8f8f8;
-}
-
-.otp-login-btn {
+    height: 36px;
     width: 100%;
-    padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
+    box-sizing: border-box;
+}
+
+.gs-google-button {
+    border: 1px solid #dadce0;
     background-color: white;
-    color: #4285f4;
+    color: #202124;
+}
+
+.gs-otp-button {
+    border: 1px solid #dadce0;
+    background-color: white;
+    color: #1a73e8;
+}
+
+.gs-account-prompt {
     font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background-color 0.2s;
-    margin-top: 12px;
-}
-
-.otp-login-btn:hover {
-    background-color: #f8f8f8;
-}
-
-.register-prompt {
-    display: flex;
-    justify-content: center;
-    gap: 5px;
-    margin-top: 20px;
-    font-size: 14px;
-    color: #666;
-}
-
-.register-prompt a {
-    color: #4285f4;
-    text-decoration: none;
-    font-weight: 500;
-}
-
-.modal-footer {
-    padding: 16px 24px;
-    border-top: 1px solid #f0f0f0;
+    color: #5f6368;
+    margin-top: 24px;
     text-align: center;
 }
 
-.privacy-text {
-    font-size: 12px;
-    color: #666;
-}
-
-.privacy-text a {
-    color: #4285f4;
+.gs-account-prompt a {
+    color: #1a73e8;
     text-decoration: none;
 }
+
+.gs-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    padding: 16px 24px;
+    border-top: 1px solid #e0e0e0;
+    gap: 12px;
+}
+
+.gs-secondary-button,
+.gs-primary-button {
+    padding: 8px 24px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    height: 36px;
+}
+
+.gs-secondary-button {
+    background-color: white;
+    border: 1px solid #dadce0;
+    color: #1a73e8;
+}
+
+.gs-primary-button {
+    background-color: #1a73e8;
+    border: none;
+    color: white;
+}
+
+/* For small screens */
+@media (max-width: 500px) {
+    .gs-modal-content {
+        width: 100%;
+        max-width: 100%;
+        height: 100%;
+        max-height: 100%;
+        border-radius: 0;
+    }
+}
+
 
 /* Emergency Exit Button */
 .emergency-exit {
