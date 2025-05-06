@@ -236,95 +236,87 @@ const search = {
         const tbody = document.querySelector('table.spreadsheet > tbody');
         const rows = Array.from(tbody.querySelectorAll('tr'));
         
-        // Keep only rows 1-10 (headers and search inputs)
-        for (let i = 10; i < rows.length; i++) {
-            // Don't remove the results-container row
-            if (!rows[i].id || rows[i].id !== 'results-container') {
-                tbody.removeChild(rows[i]);
+        // Remove job result rows (rows 11-13)
+        for (let i = 11; i <= 13; i++) {
+            const row = document.querySelector(`tr:nth-child(${i})`);
+            if (row) {
+                // Keep the row but clear all cells except the row header
+                const cells = row.querySelectorAll('td:not(.row-header)');
+                cells.forEach(cell => {
+                    cell.textContent = "";
+                    cell.className = "";
+                    cell.style = "";
+                    cell.removeAttribute('onclick');
+                });
             }
+        }
+        
+        // Clear the query from search cell (A9) - we don't want it showing the search term
+        const searchCell = document.getElementById('searchCell');
+        if (searchCell) {
+            searchCell.textContent = "";
         }
         
         if (this.currentResults.length === 0) {
             // No results found - add a single "No results" row at position 11
-            const row = document.createElement("tr");
-            
-            // Add row header
-            const rowHeader = document.createElement("td");
-            rowHeader.className = "row-header";
-            rowHeader.textContent = "11";
-            row.appendChild(rowHeader);
-            
-            // Add "No results" message
-            const messageCell = document.createElement("td");
-            messageCell.textContent = "No matching jobs found";
-            messageCell.colSpan = 7;
-            row.appendChild(messageCell);
-            
-            // Insert after row 10
-            const row10 = document.querySelector('tr:nth-child(10)');
-            if (row10) {
-                row10.after(row);
-            } else {
-                tbody.appendChild(row);
+            const row = document.querySelector('tr:nth-child(11)');
+            if (row) {
+                const messageCell = row.querySelector('td:nth-child(2)');
+                if (messageCell) {
+                    messageCell.textContent = "No matching jobs found";
+                    messageCell.colSpan = 7;
+                }
             }
             return;
         }
         
         // Add job results starting at row 11
         this.currentResults.forEach((job, index) => {
-            const row = document.createElement("tr");
+            if (index > 2) return; // Only show up to 3 results (rows 11-13)
             
-            // Add row header
-            const rowHeader = document.createElement("td");
-            rowHeader.className = "row-header";
-            rowHeader.textContent = (index + 11).toString();
-            row.appendChild(rowHeader);
-            
-            // Add company
-            const companyCell = document.createElement("td");
-            companyCell.textContent = job.company;
-            row.appendChild(companyCell);
-            
-            // Add position/title
-            const positionCell = document.createElement("td");
-            positionCell.textContent = job.title;
-            row.appendChild(positionCell);
-            
-            // Add location
-            const locationCell = document.createElement("td");
-            locationCell.textContent = job.location;
-            row.appendChild(locationCell);
-            
-            // Add salary
-            const salaryCell = document.createElement("td");
-            salaryCell.textContent = job.salary;
-            row.appendChild(salaryCell);
-            
-            // Add experience
-            const experienceCell = document.createElement("td");
-            experienceCell.textContent = job.experience;
-            row.appendChild(experienceCell);
-            
-            // Add apply button
-            const applyCell = document.createElement("td");
-            applyCell.textContent = "Apply";
-            applyCell.className = "apply-link";
-            applyCell.dataset.jobId = job.id;
-            applyCell.onclick = function() {
-                search.applyForJob(job.id);
-            };
-            row.appendChild(applyCell);
-            
-            // Add an empty cell
-            const emptyCell = document.createElement("td");
-            row.appendChild(emptyCell);
-            
-            // Insert after row 10+index
-            const prevRow = document.querySelector(`tr:nth-child(${10+index})`);
-            if (prevRow) {
-                prevRow.after(row);
-            } else {
-                tbody.appendChild(row);
+            const rowIndex = index + 11; // Start from row 11
+            const row = document.querySelector(`tr:nth-child(${rowIndex})`);
+            if (row) {
+                // Company (cell A)
+                const companyCell = row.querySelector('td:nth-child(2)');
+                if (companyCell) {
+                    companyCell.textContent = job.company;
+                }
+                
+                // Position/title (cell B)
+                const positionCell = row.querySelector('td:nth-child(3)');
+                if (positionCell) {
+                    positionCell.textContent = job.title;
+                }
+                
+                // Location (cell C)
+                const locationCell = row.querySelector('td:nth-child(4)');
+                if (locationCell) {
+                    locationCell.textContent = job.location;
+                }
+                
+                // Salary (cell D)
+                const salaryCell = row.querySelector('td:nth-child(5)');
+                if (salaryCell) {
+                    salaryCell.textContent = job.salary;
+                }
+                
+                // Experience (cell E)
+                const experienceCell = row.querySelector('td:nth-child(6)');
+                if (experienceCell) {
+                    experienceCell.textContent = job.experience;
+                }
+                
+                // Apply button (cell F)
+                const applyCell = row.querySelector('td:nth-child(7)');
+                if (applyCell) {
+                    applyCell.textContent = "Apply";
+                    applyCell.className = "apply-link";
+                    applyCell.dataset.jobId = job.id;
+                    applyCell.onclick = function() {
+                        search.applyForJob(job.id);
+                    };
+                }
             }
         });
     },
@@ -579,15 +571,16 @@ const app = {
         document.getElementById('welcomeMessage').style.display = 'none';
         localStorage.setItem('welcomeSeen', 'true');
         
-        // Clear the existing introductory text in the spreadsheet cells
-        for (let i = 2; i <= 5; i++) {
-            const cell = document.querySelector(`tr:nth-child(${i}) td:nth-child(2)`);
-            if (cell) {
-                cell.textContent = "";
-            }
+        // Clear any existing styling from the "Got it" button cell
+        const gotItCell = document.querySelector('.got-it-cell');
+        if (gotItCell) {
+            gotItCell.textContent = "HR"; // Change text to HR
+            gotItCell.className = ""; // Remove all classes including got-it-cell
+            gotItCell.style = ""; // Remove any inline styling
+            gotItCell.removeAttribute('onclick'); // Remove onclick handler
         }
         
-        // Create financial data rows directly in the spreadsheet
+        // Financial data to display
         const financialData = [
             { category: "Marketing", q1: "$15,750", q2: "$18,450", q3: "$21,200", trend: "+12%", status: "On Track" },
             { category: "Sales", q1: "$42,800", q2: "$45,100", q3: "$48,750", trend: "+8%", status: "Exceeding" },
@@ -598,106 +591,142 @@ const app = {
             { category: "Admin", q1: "$8,750", q2: "$9,200", q3: "$9,400", trend: "+2%", status: "On Track" }
         ];
         
-        // Add the header row
-        const headerCells = ["Category", "Q1 2023", "Q2 2023", "Q3 2023", "Trend", "Status"];
+        // Update the spreadsheet with financial data
         const headerRow = document.querySelector('tr:nth-child(1)');
-        for (let i = 0; i < headerCells.length; i++) {
-            const cell = headerRow.querySelector(`td:nth-child(${i+2})`);
-            if (cell) {
-                cell.textContent = headerCells[i];
-                cell.className = 'header-cell';
-            } else {
-                // If cell doesn't exist, create it
-                const newCell = document.createElement('td');
-                newCell.textContent = headerCells[i];
-                newCell.className = 'header-cell';
-                headerRow.appendChild(newCell);
+        if (headerRow) {
+            // Create and update header cells for columns A-G
+            const headers = ["Category", "Q1 2023", "Q2 2023", "Q3 2023", "Trend", "Status", ""];
+            for (let i = 0; i < headers.length; i++) {
+                const cellIndex = i + 1; // +1 because we're skipping the row header
+                const cell = headerRow.querySelector(`td:nth-child(${cellIndex + 1})`);
+                if (cell) {
+                    cell.textContent = headers[i];
+                    cell.className = 'header-cell';
+                } else {
+                    const newCell = document.createElement('td');
+                    newCell.textContent = headers[i];
+                    newCell.className = 'header-cell';
+                    headerRow.appendChild(newCell);
+                }
+            }
+            
+            // Fill columns H-Z with empty cells (to ensure spreadsheet looks authentic)
+            for (let i = headers.length; i < 20; i++) {
+                const cellIndex = i + 1;
+                const cell = headerRow.querySelector(`td:nth-child(${cellIndex + 1})`);
+                if (!cell) {
+                    const newCell = document.createElement('td');
+                    newCell.textContent = "";
+                    headerRow.appendChild(newCell);
+                }
             }
         }
         
-        // Add financial data to rows 2-8
+        // Add financial data rows (rows 2-8)
         financialData.forEach((data, index) => {
-            const row = document.querySelector(`tr:nth-child(${index+2})`);
+            const rowIndex = index + 2; // Starting from row 2
+            const row = document.querySelector(`tr:nth-child(${rowIndex})`);
             
-            // Set the category cell
-            const categoryCell = row.querySelector('td:nth-child(2)');
-            categoryCell.textContent = data.category;
-            if (data.category === "Total") {
-                categoryCell.style.fontWeight = "bold";
-            }
-            
-            // Set Q1 cell
-            const q1Cell = row.querySelector('td:nth-child(3)');
-            if (q1Cell) {
-                q1Cell.textContent = data.q1;
-            } else {
-                const newCell = document.createElement('td');
-                newCell.textContent = data.q1;
-                row.appendChild(newCell);
-            }
-            
-            // Set Q2 cell
-            const q2Cell = row.querySelector('td:nth-child(4)');
-            if (q2Cell) {
-                q2Cell.textContent = data.q2;
-            } else {
-                const newCell = document.createElement('td');
-                newCell.textContent = data.q2;
-                row.appendChild(newCell);
-            }
-            
-            // Set Q3 cell
-            const q3Cell = row.querySelector('td:nth-child(5)');
-            if (q3Cell) {
-                q3Cell.textContent = data.q3;
-            } else {
-                const newCell = document.createElement('td');
-                newCell.textContent = data.q3;
-                row.appendChild(newCell);
-            }
-            
-            // Set Trend cell
-            const trendCell = row.querySelector('td:nth-child(6)');
-            if (trendCell) {
-                trendCell.textContent = data.trend;
-                if (data.trend.includes('-')) {
-                    trendCell.style.color = "#EA4335"; // Google red
-                } else {
-                    trendCell.style.color = "#34A853"; // Google green
+            if (row) {
+                // Set the category cell (A column)
+                const categoryCell = row.querySelector('td:nth-child(2)');
+                if (categoryCell) {
+                    categoryCell.textContent = data.category;
+                    if (data.category === "Total") {
+                        categoryCell.style.fontWeight = "bold";
+                    }
                 }
-            } else {
-                const newCell = document.createElement('td');
-                newCell.textContent = data.trend;
-                if (data.trend.includes('-')) {
-                    newCell.style.color = "#EA4335"; // Google red
-                } else {
-                    newCell.style.color = "#34A853"; // Google green
+                
+                // Set Q1 cell (B column)
+                const q1Cell = row.querySelector('td:nth-child(3)');
+                if (q1Cell) {
+                    q1Cell.textContent = data.q1;
                 }
-                row.appendChild(newCell);
-            }
-            
-            // Set Status cell
-            const statusCell = row.querySelector('td:nth-child(7)');
-            if (statusCell) {
-                statusCell.textContent = data.status;
-                if (data.status === "Review") {
-                    statusCell.style.color = "#EA4335"; // Google red
-                } else if (data.status === "Exceeding") {
-                    statusCell.style.color = "#34A853"; // Google green
+                
+                // Set Q2 cell (C column)
+                const q2Cell = row.querySelector('td:nth-child(4)');
+                if (q2Cell) {
+                    q2Cell.textContent = data.q2;
                 }
-            } else {
-                const newCell = document.createElement('td');
-                newCell.textContent = data.status;
-                if (data.status === "Review") {
-                    newCell.style.color = "#EA4335"; // Google red
-                } else if (data.status === "Exceeding") {
-                    newCell.style.color = "#34A853"; // Google green
+                
+                // Set Q3 cell (D column)
+                const q3Cell = row.querySelector('td:nth-child(5)');
+                if (q3Cell) {
+                    q3Cell.textContent = data.q3;
                 }
-                row.appendChild(newCell);
+                
+                // Set Trend cell (E column)
+                const trendCell = row.querySelector('td:nth-child(6)');
+                if (trendCell) {
+                    trendCell.textContent = data.trend;
+                    if (data.trend.includes('-')) {
+                        trendCell.style.color = "#EA4335"; // Google red
+                    } else {
+                        trendCell.style.color = "#34A853"; // Google green
+                    }
+                }
+                
+                // Set Status cell (F column)
+                const statusCell = row.querySelector('td:nth-child(7)');
+                if (statusCell) {
+                    statusCell.textContent = data.status;
+                    if (data.status === "Review") {
+                        statusCell.style.color = "#EA4335"; // Google red
+                    } else if (data.status === "Exceeding") {
+                        statusCell.style.color = "#34A853"; // Google green
+                    }
+                }
+                
+                // Add empty cells in columns G-Z for proper spreadsheet appearance
+                for (let i = 7; i < 20; i++) {
+                    const cellIndex = i + 1;
+                    const cell = row.querySelector(`td:nth-child(${cellIndex})`);
+                    if (!cell) {
+                        const newCell = document.createElement('td');
+                        newCell.textContent = "";
+                        row.appendChild(newCell);
+                    } else {
+                        cell.textContent = "";
+                    }
+                }
             }
         });
         
-        // Make sure the search cell is ready for input
+        // Make sure the search cell (cell A9) is empty initially
+        const searchCell = document.getElementById('searchCell');
+        if (searchCell) {
+            searchCell.textContent = "";
+        }
+        
+        // Fill bottom rows with empty cells
+        for (let rowIndex = 14; rowIndex <= 25; rowIndex++) {
+            // Check if the row exists, create it if not
+            let row = document.querySelector(`tr:nth-child(${rowIndex})`);
+            if (!row) {
+                row = document.createElement('tr');
+                
+                // Add row header
+                const rowHeader = document.createElement('td');
+                rowHeader.className = 'row-header';
+                rowHeader.textContent = rowIndex.toString();
+                row.appendChild(rowHeader);
+                
+                // Add empty cells for columns A-Z
+                for (let i = 0; i < 20; i++) {
+                    const emptyCell = document.createElement('td');
+                    emptyCell.textContent = "";
+                    row.appendChild(emptyCell);
+                }
+                
+                // Append to table body
+                const tbody = document.querySelector('table.spreadsheet > tbody');
+                if (tbody) {
+                    tbody.appendChild(row);
+                }
+            }
+        }
+        
+        // Focus on the search input field
         const searchInput = document.getElementById('searchInput');
         if (searchInput) {
             searchInput.focus();
