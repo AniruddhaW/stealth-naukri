@@ -658,19 +658,41 @@ document.addEventListener('DOMContentLoaded', function() {
     </script>
 
 <script>
-    window.hideWelcome = function() {
-        console.log("Activate Stealth Mode clicked");
+    // First, define a simple logging function to help debug
+    function debugLog(message) {
+        console.log("%c[DEBUG] " + message, "color: blue; font-weight: bold;");
+    }
+    
+    // Immediately set up our click handler directly on the element, bypassing the hideWelcome function
+    document.addEventListener('DOMContentLoaded', function() {
+        debugLog("Setting up direct click handler for stealth mode button");
         
-        if (typeof app !== 'undefined' && app.hideWelcome) {
-            app.hideWelcome();
-        } else {
-            console.error("App object not defined or hideWelcome method not available");
+        const stealthButton = document.querySelector('.got-it-cell');
+        if (stealthButton) {
+            // Remove the inline onclick attribute to avoid conflicts
+            stealthButton.removeAttribute('onclick');
             
+            // Add our direct event listener
+            stealthButton.addEventListener('click', function() {
+                debugLog("Stealth button clicked via direct event listener");
+                activateStealthMode();
+            });
+        } else {
+            console.error("Could not find stealth mode button element");
+        }
+    });
+    
+    // Create a completely separate function with a unique name
+    function activateStealthMode() {
+        debugLog("activateStealthMode function executing");
+        
+        try {
             // Clear the welcome message text in cells
             for (let i = 2; i <= 5; i++) {
                 const cell = document.querySelector(`tr:nth-child(${i}) td:nth-child(2)`);
                 if (cell) {
                     cell.textContent = "";
+                    debugLog(`Cleared content in cell row ${i}`);
                 }
             }
             
@@ -681,18 +703,114 @@ document.addEventListener('DOMContentLoaded', function() {
                 gotItCell.className = ""; // Remove classes
                 gotItCell.style = ""; // Remove styling
                 gotItCell.removeAttribute('onclick');
+                debugLog("Modified stealth button to show 'HR'");
             }
             
             // Set the flag to avoid showing the welcome message again
             localStorage.setItem('welcomeSeen', 'true');
+            debugLog("Set welcomeSeen flag in localStorage");
             
-            // Call the emergency view function to display the budget data
+            // Try all possible ways to activate emergency view
             if (typeof emergency !== 'undefined' && emergency.showSpreadsheetView) {
+                debugLog("Calling emergency.showSpreadsheetView()");
                 emergency.showSpreadsheetView();
+            } else if (typeof window.emergency !== 'undefined' && window.emergency.showSpreadsheetView) {
+                debugLog("Calling window.emergency.showSpreadsheetView()");
+                window.emergency.showSpreadsheetView();
+            } else if (typeof app !== 'undefined' && app.showEmergencyView) {
+                debugLog("Calling app.showEmergencyView()");
+                app.showEmergencyView();
+            } else {
+                console.error("Could not find emergency view functions");
+                // Fallback: let's at least try to populate some data
+                populateBudgetData();
             }
+        } catch (error) {
+            console.error("Error in activateStealthMode:", error);
         }
+    }
+    
+    // Fallback function to populate data if emergency view is not available
+    function populateBudgetData() {
+        debugLog("Running fallback budget data population");
+        
+        // Financial data to display
+        const financialData = [
+            { category: "Marketing", q1: "₹15,750", q2: "₹18,450", q3: "₹21,200", trend: "+12%", status: "On Track" },
+            { category: "Sales", q1: "₹42,800", q2: "₹45,100", q3: "₹48,750", trend: "+8%", status: "Exceeding" },
+            { category: "R&D", q1: "₹34,200", q2: "₹33,800", q3: "₹36,500", trend: "+5%", status: "On Track" },
+            { category: "Operations", q1: "₹28,300", q2: "₹27,900", q3: "₹29,100", trend: "+3%", status: "On Track" },
+            { category: "IT", q1: "₹18,400", q2: "₹22,700", q3: "₹19,800", trend: "-13%", status: "Review" },
+            { category: "HR", q1: "₹12,100", q2: "₹12,350", q3: "₹12,600", trend: "+2%", status: "On Track" },
+            { category: "Admin", q1: "₹8,750", q2: "₹9,200", q3: "₹9,400", trend: "+2%", status: "On Track" }
+        ];
+        
+        // Add financial data rows (rows 2-8)
+        financialData.forEach((data, index) => {
+            const rowIndex = index + 2; // Starting from row 2
+            const row = document.querySelector(`tr:nth-child(${rowIndex})`);
+            
+            if (row) {
+                // Set the category cell (A column)
+                const categoryCell = row.querySelector('td:nth-child(2)');
+                if (categoryCell) {
+                    categoryCell.textContent = data.category;
+                    debugLog(`Set ${data.category} in row ${rowIndex}`);
+                }
+                
+                // Set Q1 cell (B column)
+                const q1Cell = row.querySelector('td:nth-child(3)');
+                if (q1Cell) {
+                    q1Cell.textContent = data.q1;
+                }
+                
+                // Set Q2 cell (C column)
+                const q2Cell = row.querySelector('td:nth-child(4)');
+                if (q2Cell) {
+                    q2Cell.textContent = data.q2;
+                }
+                
+                // Set Q3 cell (D column)
+                const q3Cell = row.querySelector('td:nth-child(5)');
+                if (q3Cell) {
+                    q3Cell.textContent = data.q3;
+                }
+                
+                // Set Trend cell (E column)
+                const trendCell = row.querySelector('td:nth-child(6)');
+                if (trendCell) {
+                    trendCell.textContent = data.trend;
+                    if (data.trend.includes('-')) {
+                        trendCell.style.color = "#EA4335"; // Google red
+                    } else {
+                        trendCell.style.color = "#34A853"; // Google green
+                    }
+                }
+                
+                // Set Status cell (F column)
+                const statusCell = row.querySelector('td:nth-child(7)');
+                if (statusCell) {
+                    statusCell.textContent = data.status;
+                    if (data.status === "Review") {
+                        statusCell.style.color = "#EA4335"; // Google red
+                    } else if (data.status === "Exceeding") {
+                        statusCell.style.color = "#34A853"; // Google green
+                    }
+                }
+            }
+        });
+        
+        debugLog("Finished populating budget data");
+    }
+    
+    // Just to be safe, we'll also define the global hideWelcome function
+    window.hideWelcome = function() {
+        debugLog("Global hideWelcome function called");
+        activateStealthMode();
     };
     </script>
+
+
 
 
 </body>
