@@ -455,13 +455,6 @@ const app = {
         
         // Check login status
         this.checkLoginStatus();
-        
-        // Check if welcome message has been seen
-        if (localStorage.getItem('welcomeSeen') !== 'true') {
-            document.getElementById('welcomeMessage').style.display = 'block';
-        } else {
-            document.getElementById('welcomeMessage').style.display = 'none';
-        }
 
         console.log("App initialization complete");
     },
