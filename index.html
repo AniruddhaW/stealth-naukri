@@ -927,83 +927,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   </script>
 
-<!-- AVATAR CLICK AREA FIX -->
-<script>
-    window.addEventListener('load', function() {
-      // Get the avatar element
-      const avatar = document.getElementById('userAvatar');
-      
-      if (avatar) {
-        console.log('Avatar fix: Found the avatar element');
-        
-        // Enhanced styling for better clickability
-        avatar.style.cursor = 'pointer';
-        avatar.style.display = 'flex';
-        avatar.style.justifyContent = 'center';
-        avatar.style.alignItems = 'center';
-        avatar.style.width = '32px';
-        avatar.style.height = '32px';
-        avatar.style.borderRadius = '50%';
-        avatar.style.backgroundColor = '#1a73e8';
-        avatar.style.color = 'white';
-        
-        // Add a unique click handler that's completely separate
-        // This will override any previous handlers through capture phase
-        avatar.addEventListener('click', function avatarClickHandler(event) {
-          console.log('Avatar fix: Click detected');
-          event.stopPropagation();
-          event.preventDefault();
-          
-          // Create or toggle the dropdown directly
-          let dropdown = document.getElementById('userDropdown');
-          
-          if (dropdown) {
-            // Toggle existing dropdown
-            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
-            console.log('Avatar fix: Toggled existing dropdown');
-          } else {
-            // Create new dropdown
-            console.log('Avatar fix: Creating new dropdown');
-            dropdown = document.createElement('div');
-            dropdown.id = 'userDropdown';
-            
-            const userData = JSON.parse(localStorage.getItem('naukriUser') || '{}');
-            const userName = userData.name || 'Guest User';
-            const userEmail = userData.email || '';
-            
-            dropdown.innerHTML = `
-              <div style="padding: 10px; font-weight: bold;">${userName}</div>
-              <div style="padding: 0 10px 10px; color: #666;">${userEmail}</div>
-              <div style="height: 1px; background-color: #e0e0e0; margin: 5px 0;"></div>
-              <div style="padding: 10px; cursor: pointer;" onclick="window.app.logout()">Sign out</div>
-            `;
-            
-            // Direct styling instead of using classes
-            dropdown.style.position = 'absolute';
-            dropdown.style.top = '50px';
-            dropdown.style.right = '10px';
-            dropdown.style.backgroundColor = 'white';
-            dropdown.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
-            dropdown.style.borderRadius = '8px';
-            dropdown.style.minWidth = '220px';
-            dropdown.style.zIndex = '9999';
-            dropdown.style.display = 'block';
-            
-            document.body.appendChild(dropdown);
-            
-            // Close dropdown when clicking elsewhere
-            document.addEventListener('click', function closeDropdownHandler(e) {
-              if (e.target !== dropdown && !dropdown.contains(e.target) && e.target !== avatar) {
-                dropdown.style.display = 'none';
-              }
-            });
-          }
-        }, true); // Using capture phase to ensure this handler runs first
-        
-        console.log('Avatar fix: Click handler attached');
-      }
-    });
-    </script>
 
     <!-- STEALTH MODE HEADER FIX -->
 <script>
@@ -1043,139 +966,121 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     </script>
 
-    <!-- AVATAR COMPLETE REPLACEMENT -->
+<!-- AVATAR FIX - FINAL ATTEMPT -->
 <script>
-    // Create the replacement function
-    function createReplacementAvatar() {
-      console.log('Starting avatar replacement process');
-      
-      // Get the original avatar
-      const originalAvatar = document.getElementById('userAvatar');
-      if (!originalAvatar) {
-        console.error('Original avatar not found');
-        return;
-      }
-      
-      // Get the parent element
-      const parent = originalAvatar.parentNode;
-      if (!parent) {
-        console.error('Parent element not found');
-        return;
-      }
-      
-      // Get user data
-      const userData = JSON.parse(localStorage.getItem('naukriUser') || '{}');
-      const initial = (userData.name || 'G').charAt(0).toUpperCase();
-      
-      // Create a completely new element
-      const newAvatar = document.createElement('div');
-      newAvatar.id = 'newUserAvatar'; // Different ID to avoid conflicts
-      newAvatar.innerHTML = initial;
-      
-      // Apply extensive styling
-      Object.assign(newAvatar.style, {
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: '32px',
-        height: '32px',
-        borderRadius: '50%',
-        backgroundColor: '#1a73e8',
-        color: 'white',
-        fontSize: '16px',
-        fontWeight: 'bold',
-        cursor: 'pointer',
-        userSelect: 'none',
-        position: 'relative',
-        zIndex: '999'
-      });
-      
-      // Insert the new avatar next to the original
-      parent.insertBefore(newAvatar, originalAvatar);
-      
-      // Hide the original avatar
-      originalAvatar.style.display = 'none';
-      
-      // Add click handler to the new avatar
-      newAvatar.onclick = function(event) {
-        console.log('New avatar clicked');
-        event.stopPropagation();
-        event.preventDefault();
-        
-        // Create or toggle dropdown
-        let dropdown = document.getElementById('userDropdown');
-        if (dropdown) {
-          dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
-          console.log('Toggled existing dropdown');
-        } else {
-          // Create new dropdown
-          console.log('Creating new dropdown');
-          dropdown = document.createElement('div');
-          dropdown.id = 'userDropdown';
-          
-          const userName = userData.name || 'Google User';
-          const userEmail = userData.email || 'user@gmail.com';
-          
-          // Using direct HTML for simplicity
-          dropdown.innerHTML = `
-            <div style="padding: 10px; font-weight: bold;">${userName}</div>
-            <div style="padding: 0 10px 10px; color: #666;">${userEmail}</div>
-            <div style="height: 1px; background-color: #e0e0e0; margin: 5px 0;"></div>
-            <div style="padding: 10px; cursor: pointer;" onclick="window.app.logout()">Sign out</div>
-          `;
-          
-          // Apply styling
-          Object.assign(dropdown.style, {
-            position: 'absolute',
-            top: '50px',
-            right: '10px',
-            backgroundColor: 'white',
-            boxShadow: '0 2px 10px rgba(0,0,0,0.2)',
-            borderRadius: '8px',
-            minWidth: '220px',
-            zIndex: '9999',
-            display: 'block'
-          });
-          
-          document.body.appendChild(dropdown);
-          
-          // Add event listener to close dropdown when clicking elsewhere
-          document.addEventListener('click', function closeDropdown(e) {
-            if (e.target !== dropdown && !dropdown.contains(e.target) && e.target !== newAvatar) {
-              dropdown.style.display = 'none';
-            }
-          });
-        }
-        
-        return false;
-      };
-      
-      console.log('Avatar replacement complete');
-    }
-    
-    // Check if user is logged in regularly and apply the fix
-    function checkAndFixAvatar() {
-      const token = localStorage.getItem('naukriAuthToken');
-      const userData = JSON.parse(localStorage.getItem('naukriUser') || '{}');
-      
-      if (token && userData.name) {
-        // User is logged in, check if we need to replace the avatar
-        if (!document.getElementById('newUserAvatar')) {
-          console.log('User logged in, creating replacement avatar');
-          createReplacementAvatar();
-        }
-      }
-    }
-    
-    // Run on load and periodically check
     window.addEventListener('load', function() {
-      console.log('Checking for logged in user...');
-      
-      // Initial check
-      checkAndFixAvatar();
-      
-      // Periodically check (every 2 seconds)
-      setInterval(checkAndFixAvatar, 2000);
+      setTimeout(function() {
+        // Disable all existing avatar click handlers
+        const originalAvatar = document.getElementById('userAvatar');
+        if (originalAvatar) {
+          // Clone the node to remove all event listeners
+          const clone = originalAvatar.cloneNode(true);
+          originalAvatar.parentNode.replaceChild(clone, originalAvatar);
+        }
+        
+        // Create a completely new button element for the avatar
+        const avatarButton = document.createElement('button');
+        avatarButton.id = 'userAvatarButton';
+        avatarButton.textContent = 'G'; // Default initial
+        
+        // Get user info if available
+        const userData = JSON.parse(localStorage.getItem('naukriUser') || '{}');
+        if (userData.name) {
+          avatarButton.textContent = userData.name.charAt(0).toUpperCase();
+        }
+        
+        // Apply comprehensive styling
+        Object.assign(avatarButton.style, {
+          position: 'fixed',
+          top: '12px',
+          right: '12px',
+          width: '32px',
+          height: '32px',
+          borderRadius: '50%',
+          backgroundColor: '#1a73e8',
+          color: 'white',
+          border: 'none',
+          fontSize: '16px',
+          fontWeight: 'bold',
+          cursor: 'pointer',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: '9999'
+        });
+        
+        // Add the button to the document
+        document.body.appendChild(avatarButton);
+        
+        // Hide the original avatar completely
+        const avatarElements = document.querySelectorAll('.avatar, #userAvatar, #newUserAvatar');
+        avatarElements.forEach(element => {
+          if (element && element !== avatarButton) {
+            element.style.display = 'none';
+          }
+        });
+        
+        // Add click handler to the button
+        avatarButton.addEventListener('click', function(e) {
+          e.stopPropagation();
+          e.preventDefault();
+          console.log('Avatar button clicked');
+          
+          // Toggle dropdown
+          let dropdown = document.getElementById('userDropdown');
+          if (dropdown) {
+            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+          } else {
+            dropdown = document.createElement('div');
+            dropdown.id = 'userDropdown';
+            
+            const userName = userData.name || 'Google User';
+            const userEmail = userData.email || 'user@gmail.com';
+            
+            dropdown.innerHTML = `
+              <div style="padding: 10px; font-weight: bold;">${userName}</div>
+              <div style="padding: 0 10px 10px; color: #666;">${userEmail}</div>
+              <div style="height: 1px; background-color: #e0e0e0; margin: 5px 0;"></div>
+              <div id="signOutButton" style="padding: 10px; cursor: pointer;">Sign out</div>
+            `;
+            
+            Object.assign(dropdown.style, {
+              position: 'fixed',
+              top: '50px',
+              right: '10px',
+              backgroundColor: 'white',
+              boxShadow: '0 2px 10px rgba(0,0,0,0.2)',
+              borderRadius: '8px',
+              minWidth: '220px',
+              zIndex: '9999',
+              display: 'block'
+            });
+            
+            document.body.appendChild(dropdown);
+            
+            // Add click handler to sign out button
+            const signOutButton = document.getElementById('signOutButton');
+            if (signOutButton) {
+              signOutButton.addEventListener('click', function() {
+                if (window.app && typeof window.app.logout === 'function') {
+                  window.app.logout();
+                  // Hide our button after logout
+                  avatarButton.style.display = 'none';
+                }
+              });
+            }
+            
+            // Close dropdown when clicking elsewhere
+            document.addEventListener('click', function closeDropdown(e) {
+              if (e.target !== dropdown && !dropdown.contains(e.target) && e.target !== avatarButton) {
+                dropdown.style.display = 'none';
+              }
+            });
+          }
+        });
+        
+        console.log('Complete avatar button replacement implemented');
+      }, 1000); // Longer delay to ensure all other scripts have finished
     });
     </script>
 
