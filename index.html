@@ -582,15 +582,41 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 4. Enhanced hideWelcome function
     const originalHideWelcome = window.hideWelcome;
-    window.hideWelcome = function() {
-        // Call the original function
-        if (typeof originalHideWelcome === 'function') {
-            originalHideWelcome();
+    // Add this to ensure hideWelcome function is defined globally
+window.hideWelcome = function() {
+    console.log("Activate Stealth Mode clicked");
+    
+    if (typeof app !== 'undefined' && app.hideWelcome) {
+        app.hideWelcome();
+    } else {
+        console.error("App object not defined or hideWelcome method not available");
+        
+        // Clear the welcome message text in cells
+        for (let i = 2; i <= 5; i++) {
+            const cell = document.querySelector(`tr:nth-child(${i}) td:nth-child(2)`);
+            if (cell) {
+                cell.textContent = "";
+            }
         }
         
-        // Also enhance the spreadsheet
-        enhanceSpreadsheet();
-    };
+        // Change the "Activate Stealth Mode" cell
+        const gotItCell = document.querySelector('.got-it-cell');
+        if (gotItCell) {
+            gotItCell.textContent = "HR";
+            gotItCell.className = ""; // Remove classes
+            gotItCell.style = ""; // Remove styling
+            gotItCell.removeAttribute('onclick');
+        }
+        
+        // Set the flag to avoid showing the welcome message again
+        localStorage.setItem('welcomeSeen', 'true');
+        
+        // Call the emergency view function to display the budget data
+        if (typeof emergency !== 'undefined' && emergency.showSpreadsheetView) {
+            emergency.showSpreadsheetView();
+        }
+    }
+};
 });
 </script>
 
