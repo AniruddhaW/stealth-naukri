@@ -927,5 +927,83 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   </script>
 
+<!-- FIX FOR AVATAR CLICK AREA -->
+<script>
+    window.addEventListener('load', function() {
+      // Get the avatar element
+      const avatar = document.getElementById('userAvatar');
+      
+      if (avatar) {
+        console.log('Avatar element found, applying fix...');
+        
+        // Make sure it's using block display and has sufficient size
+        avatar.style.display = 'flex';
+        avatar.style.justifyContent = 'center';
+        avatar.style.alignItems = 'center';
+        avatar.style.minWidth = '32px';
+        avatar.style.minHeight = '32px';
+        avatar.style.cursor = 'pointer';
+        
+        // Completely replace the click handler to ensure it works on the entire element
+        avatar.removeEventListener('click', avatar.onclick);
+        
+        avatar.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          console.log('Avatar clicked (new handler)');
+          
+          let dropdown = document.getElementById('userDropdown');
+          
+          if (dropdown) {
+            if (dropdown.style.display === 'block') {
+              dropdown.style.display = 'none';
+            } else {
+              dropdown.style.display = 'block';
+            }
+            return;
+          }
+          
+          dropdown = document.createElement('div');
+          dropdown.id = 'userDropdown';
+          dropdown.className = 'user-dropdown';
+          
+          const userData = JSON.parse(localStorage.getItem('naukriUser') || '{}');
+          const userName = userData.name || 'Guest User';
+          const userEmail = userData.email || '';
+          
+          dropdown.innerHTML = `
+              <div class="user-info">${userName}</div>
+              <div class="email-info">${userEmail}</div>
+              <div class="dropdown-separator"></div>
+              <div class="logout-option" onclick="window.app.logout()">Sign out</div>
+          `;
+          
+          dropdown.style.position = 'absolute';
+          dropdown.style.top = '50px';
+          dropdown.style.right = '10px';
+          dropdown.style.backgroundColor = 'white';
+          dropdown.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
+          dropdown.style.borderRadius = '8px';
+          dropdown.style.minWidth = '220px';
+          dropdown.style.zIndex = '1000';
+          dropdown.style.display = 'block';
+          
+          document.body.appendChild(dropdown);
+          
+          // Create document click handler to close dropdown when clicking elsewhere
+          document.addEventListener('click', function closeDropdown(event) {
+            if (event.target !== dropdown && !dropdown.contains(event.target) && event.target !== avatar) {
+              dropdown.style.display = 'none';
+            }
+          });
+        });
+        
+        console.log('Avatar click area fix applied');
+      } else {
+        console.error('Avatar element not found');
+      }
+    });
+    </script>
+
 </body>
 </html>
