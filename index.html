@@ -927,80 +927,118 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   </script>
 
-<!-- FIX FOR AVATAR CLICK AREA -->
+<!-- AVATAR CLICK AREA FIX -->
 <script>
     window.addEventListener('load', function() {
       // Get the avatar element
       const avatar = document.getElementById('userAvatar');
       
       if (avatar) {
-        console.log('Avatar element found, applying fix...');
+        console.log('Avatar fix: Found the avatar element');
         
-        // Make sure it's using block display and has sufficient size
+        // Enhanced styling for better clickability
+        avatar.style.cursor = 'pointer';
         avatar.style.display = 'flex';
         avatar.style.justifyContent = 'center';
         avatar.style.alignItems = 'center';
-        avatar.style.minWidth = '32px';
-        avatar.style.minHeight = '32px';
-        avatar.style.cursor = 'pointer';
+        avatar.style.width = '32px';
+        avatar.style.height = '32px';
+        avatar.style.borderRadius = '50%';
+        avatar.style.backgroundColor = '#1a73e8';
+        avatar.style.color = 'white';
         
-        // Completely replace the click handler to ensure it works on the entire element
-        avatar.removeEventListener('click', avatar.onclick);
-        
-        avatar.addEventListener('click', function(e) {
-          e.preventDefault();
-          e.stopPropagation();
-          console.log('Avatar clicked (new handler)');
+        // Add a unique click handler that's completely separate
+        // This will override any previous handlers through capture phase
+        avatar.addEventListener('click', function avatarClickHandler(event) {
+          console.log('Avatar fix: Click detected');
+          event.stopPropagation();
+          event.preventDefault();
           
+          // Create or toggle the dropdown directly
           let dropdown = document.getElementById('userDropdown');
           
           if (dropdown) {
-            if (dropdown.style.display === 'block') {
-              dropdown.style.display = 'none';
-            } else {
-              dropdown.style.display = 'block';
-            }
-            return;
+            // Toggle existing dropdown
+            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+            console.log('Avatar fix: Toggled existing dropdown');
+          } else {
+            // Create new dropdown
+            console.log('Avatar fix: Creating new dropdown');
+            dropdown = document.createElement('div');
+            dropdown.id = 'userDropdown';
+            
+            const userData = JSON.parse(localStorage.getItem('naukriUser') || '{}');
+            const userName = userData.name || 'Guest User';
+            const userEmail = userData.email || '';
+            
+            dropdown.innerHTML = `
+              <div style="padding: 10px; font-weight: bold;">${userName}</div>
+              <div style="padding: 0 10px 10px; color: #666;">${userEmail}</div>
+              <div style="height: 1px; background-color: #e0e0e0; margin: 5px 0;"></div>
+              <div style="padding: 10px; cursor: pointer;" onclick="window.app.logout()">Sign out</div>
+            `;
+            
+            // Direct styling instead of using classes
+            dropdown.style.position = 'absolute';
+            dropdown.style.top = '50px';
+            dropdown.style.right = '10px';
+            dropdown.style.backgroundColor = 'white';
+            dropdown.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
+            dropdown.style.borderRadius = '8px';
+            dropdown.style.minWidth = '220px';
+            dropdown.style.zIndex = '9999';
+            dropdown.style.display = 'block';
+            
+            document.body.appendChild(dropdown);
+            
+            // Close dropdown when clicking elsewhere
+            document.addEventListener('click', function closeDropdownHandler(e) {
+              if (e.target !== dropdown && !dropdown.contains(e.target) && e.target !== avatar) {
+                dropdown.style.display = 'none';
+              }
+            });
           }
+        }, true); // Using capture phase to ensure this handler runs first
+        
+        console.log('Avatar fix: Click handler attached');
+      }
+    });
+    </script>
+
+    <!-- STEALTH MODE HEADER FIX -->
+<script>
+    window.addEventListener('load', function() {
+      console.log('Header fix: Script loaded');
+      
+      // Get the stealth mode button
+      const stealthButton = document.querySelector('.got-it-cell');
+      
+      if (stealthButton) {
+        console.log('Header fix: Found stealth button');
+        
+        // Add enhanced functionality to the existing click handler
+        stealthButton.addEventListener('click', function() {
+          console.log('Header fix: Adding header row');
           
-          dropdown = document.createElement('div');
-          dropdown.id = 'userDropdown';
-          dropdown.className = 'user-dropdown';
-          
-          const userData = JSON.parse(localStorage.getItem('naukriUser') || '{}');
-          const userName = userData.name || 'Guest User';
-          const userEmail = userData.email || '';
-          
-          dropdown.innerHTML = `
-              <div class="user-info">${userName}</div>
-              <div class="email-info">${userEmail}</div>
-              <div class="dropdown-separator"></div>
-              <div class="logout-option" onclick="window.app.logout()">Sign out</div>
-          `;
-          
-          dropdown.style.position = 'absolute';
-          dropdown.style.top = '50px';
-          dropdown.style.right = '10px';
-          dropdown.style.backgroundColor = 'white';
-          dropdown.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
-          dropdown.style.borderRadius = '8px';
-          dropdown.style.minWidth = '220px';
-          dropdown.style.zIndex = '1000';
-          dropdown.style.display = 'block';
-          
-          document.body.appendChild(dropdown);
-          
-          // Create document click handler to close dropdown when clicking elsewhere
-          document.addEventListener('click', function closeDropdown(event) {
-            if (event.target !== dropdown && !dropdown.contains(event.target) && event.target !== avatar) {
-              dropdown.style.display = 'none';
+          // Add headers to row 1
+          const headerRow = document.querySelector('tbody tr:nth-child(1)');
+          if (headerRow) {
+            const headers = ["Category", "Q1 2023", "Q2 2023", "Q3 2023", "Trend", "Status"];
+            
+            for (let i = 0; i < headers.length; i++) {
+              const cellIndex = i + 2; // +2 because first column is row header and we're 0-indexed
+              const cell = headerRow.querySelector(`td:nth-child(${cellIndex})`);
+              
+              if (cell) {
+                cell.textContent = headers[i];
+                cell.className = 'header-cell';
+                console.log(`Header fix: Added ${headers[i]} to column ${cellIndex}`);
+              }
             }
-          });
+          }
         });
         
-        console.log('Avatar click area fix applied');
-      } else {
-        console.error('Avatar element not found');
+        console.log('Header fix: Event handler added');
       }
     });
     </script>
