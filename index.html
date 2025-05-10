@@ -281,7 +281,7 @@
                     </tr>
                     <tr>
                         <td class="row-header">7</td>
-                        <td class="got-it-cell" onclick="hideWelcome()">Activate Stealth Mode</td>
+                        <td class="got-it-cell">Activate Stealth Mode</td>
                         <td></td>
                         <td></td>
                         <td></td>
@@ -810,8 +810,122 @@ document.addEventListener('DOMContentLoaded', function() {
     };
     </script>
 
-
-
+<!-- EMERGENCY DIRECT FIX - BYPASSES ALL EXISTING CODE -->
+<script>
+    // Wait for the full page to load
+    window.addEventListener('load', function() {
+      console.log('DIRECT FIX: Script loaded');
+      
+      // Get the stealth mode button
+      const stealthButton = document.querySelector('.got-it-cell');
+      if (stealthButton) {
+        console.log('DIRECT FIX: Found stealth button');
+        
+        // Add our completely standalone click handler
+        stealthButton.addEventListener('click', function(e) {
+          console.log('DIRECT FIX: Button clicked');
+          
+          // Prevent default and stop propagation to avoid any other handlers
+          e.preventDefault();
+          e.stopPropagation();
+          
+          try {
+            // 1. Clear the welcome messages
+            console.log('DIRECT FIX: Clearing welcome messages');
+            for (let i = 2; i <= 5; i++) {
+              const cell = document.querySelector(`tbody tr:nth-child(${i}) td:nth-child(2)`);
+              if (cell) {
+                cell.textContent = '';
+                console.log(`DIRECT FIX: Cleared row ${i}`);
+              }
+            }
+            
+            // 2. Update the button cell
+            console.log('DIRECT FIX: Updating button cell');
+            stealthButton.textContent = 'HR';
+            stealthButton.className = '';
+            stealthButton.style.cursor = 'default';
+            
+            // Set a flag for next load
+            localStorage.setItem('welcomeSeen', 'true');
+            
+            // 3. Add the budget data directly
+            console.log('DIRECT FIX: Adding budget data');
+            
+            // Define budget data
+            const budgetData = [
+              { category: "Marketing", q1: "₹15,750", q2: "₹18,450", q3: "₹21,200", trend: "+12%", status: "On Track" },
+              { category: "Sales", q1: "₹42,800", q2: "₹45,100", q3: "₹48,750", trend: "+8%", status: "Exceeding" },
+              { category: "R&D", q1: "₹34,200", q2: "₹33,800", q3: "₹36,500", trend: "+5%", status: "On Track" },
+              { category: "Operations", q1: "₹28,300", q2: "₹27,900", q3: "₹29,100", trend: "+3%", status: "On Track" },
+              { category: "IT", q1: "₹18,400", q2: "₹22,700", q3: "₹19,800", trend: "-13%", status: "Review" },
+              { category: "HR", q1: "₹12,100", q2: "₹12,350", q3: "₹12,600", trend: "+2%", status: "On Track" },
+              { category: "Admin", q1: "₹8,750", q2: "₹9,200", q3: "₹9,400", trend: "+2%", status: "On Track" }
+            ];
+            
+            // Add data rows
+            budgetData.forEach((data, index) => {
+              const rowIndex = index + 2;  // Start at row 2
+              const row = document.querySelector(`tbody tr:nth-child(${rowIndex})`);
+              
+              if (row) {
+                // Category (A column)
+                const catCell = row.querySelector('td:nth-child(2)');
+                if (catCell) {
+                  catCell.textContent = data.category;
+                  console.log(`DIRECT FIX: Added ${data.category} to row ${rowIndex}`);
+                }
+                
+                // Q1 (B column)
+                const q1Cell = row.querySelector('td:nth-child(3)');
+                if (q1Cell) q1Cell.textContent = data.q1;
+                
+                // Q2 (C column)
+                const q2Cell = row.querySelector('td:nth-child(4)');
+                if (q2Cell) q2Cell.textContent = data.q2;
+                
+                // Q3 (D column)
+                const q3Cell = row.querySelector('td:nth-child(5)');
+                if (q3Cell) q3Cell.textContent = data.q3;
+                
+                // Trend (E column)
+                const trendCell = row.querySelector('td:nth-child(6)');
+                if (trendCell) {
+                  trendCell.textContent = data.trend;
+                  if (data.trend.includes('-')) {
+                    trendCell.style.color = "#EA4335"; // Red
+                  } else {
+                    trendCell.style.color = "#34A853"; // Green
+                  }
+                }
+                
+                // Status (F column)
+                const statusCell = row.querySelector('td:nth-child(7)');
+                if (statusCell) {
+                  statusCell.textContent = data.status;
+                  if (data.status === "Review") {
+                    statusCell.style.color = "#EA4335"; // Red
+                  } else if (data.status === "Exceeding") {
+                    statusCell.style.color = "#34A853"; // Green
+                  }
+                }
+              }
+            });
+            
+            console.log('DIRECT FIX: Success!');
+          } catch (error) {
+            console.error('DIRECT FIX ERROR:', error);
+          }
+          
+          return false;
+        });
+        
+        console.log('DIRECT FIX: Click handler attached successfully');
+      } else {
+        console.error('DIRECT FIX: Could not find stealth button element');
+      }
+    });
+  </script>
 
 </body>
 </html>
